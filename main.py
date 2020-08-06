@@ -1,34 +1,20 @@
-from flask import Flask
+from flask import request, Flask
+from flask_restful import reqparse, abort, Api, Resource
+
 app = Flask(__name__)
+api = Api(app)
+parser = reqparse.RequestParser()
 
 
-@app.route('/')
-def default():
-    return 'Welcome to Speecher'
+class Phrase(Resource):
+    def get(self):
+        return {'name': 'phrase'}
+
+    def post(self):
+        args = parser.parse_args()
 
 
-@app.route('/speech/<query>', methods=['GET', 'POST'])
-def speech(query):
-    if Flask.method == 'GET':
-        return 'get speech'
-    else:
-        return 'create new speech'
-
-
-@app.route('/group/<query>', methods=['GET', 'POST'])
-def group(query):
-    if Flask.method == 'GET':
-        return 'get speech'
-    else:
-        return 'create new speech'
-
-
-@app.route('/phrase/<query>', methods=['GET', 'POST'])
-def phrase(query):
-    if Flask.method == 'GET':
-        return 'get speech'
-    else:
-        return 'create new speech'
+api.add_resource(Phrase, '/phrase')
 
 
 if __name__ == '__main__':
