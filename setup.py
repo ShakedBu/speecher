@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='speecher',
     version='1.0.0',
-    packages=['psycopg2'],
+    packages=['psycopg2', 'flaks'],
     url='',
     license='',
     author='Shaked',
