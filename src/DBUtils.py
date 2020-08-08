@@ -1,7 +1,7 @@
 import psycopg2
 
 
-def execute_query(query):
+def execute_query(query, is_single_row=False):
     try:
         # Open connection to our database
         connection = psycopg2.connect(user="postgres",
@@ -10,11 +10,14 @@ def execute_query(query):
                                       port="5432",
                                       database="speecher")
         cursor = connection.cursor()
-        # postgre_select_query = "select * from public.\"Word\""
 
         # Open a cursor to perform database operations
         cursor.execute(query)
-        records = cursor.fetchall()
+
+        if is_single_row:
+            records = cursor.fetchone()
+        else:
+            records = cursor.fetchall()
 
         # Make the changes to the database if insert action
         if 'INSERT' in query:
@@ -25,8 +28,8 @@ def execute_query(query):
 
     finally:
         # Close database connection.
-        if (connection):
+        if connection:
             cursor.close()
             connection.close()
 
-    return records
+        return records
