@@ -1,7 +1,7 @@
 import re
 
 from src.DBUtils import execute_query
-from src.queries import NEW_SPEECH, LAST_WORD_INDEX, NEW_WORD, ADD_WORD_TO_SPEECH
+from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, GET_WORD
 
 
 def create_new_speech(name, speaker, date, location, file_path, text):
@@ -29,10 +29,15 @@ def create_new_speech(name, speaker, date, location, file_path, text):
                 # Get suffix and prefix and actual word
                 prefix, actual_word, suffix = re.split(curr_word, '(\\W)(\\w*)(\\W*)')
 
-                # Add the new word to DB - only adds it if not exists already
-                word_id = execute_query(LAST_WORD_INDEX, True)[0]
-                word_id += 1
-                execute_query((NEW_WORD, (word_id, actual_word), True))
+                # Try to find the word in the DB
+                word = execute_query((GET_WORD, actual_word), True)
+
+                # If found - gets id otherwise adds it
+                if word[0] != 0:
+                    word_id = word[0]
+                else:
+                    word = execute_query((NEW_WORD, (word_id, actual_word), True))
+                    word_id = word[0]
 
                 # Add the word into the speech in DB
                 execute_query((ADD_WORD_TO_SPEECH, (word_id, speech[0], paragraph_index,
