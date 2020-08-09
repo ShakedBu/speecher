@@ -7,6 +7,8 @@ ADD_WORD_TO_SPEECH = '''INSERT INTO public."Word_in_Speech"(
 word_id, speech_id, paragraph, sentence, index_in_sentence, prefix, suffix)
 VALUES (?, ?, ?, ?, ?, ?, ?);'''
 
+SEARCH_SPEECH = ''''''
+
 # Words
 NEW_WORD = '''INSERT INTO public."Word"(
 word_id, word)
