@@ -14,6 +14,14 @@ class Phrase(Resource):
         args = parser.parse_args()
 
 
+class Group(Resource):
+    def get(self):
+        return {'name': 'Group'}
+
+    def post(self):
+        args = parser.parse_args()
+
+
 class Speech(Resource):
     def get(self):
         return {'name': 'speech'}
@@ -23,6 +31,7 @@ class Speech(Resource):
 
 
 api.add_resource(Phrase, '/phrase')
+api.add_resource(Group, '/group')
 api.add_resource(Speech, '/speech')
 
 

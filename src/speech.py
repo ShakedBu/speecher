@@ -6,6 +6,7 @@ from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, GET_WORD, SEAR
 
 def create_new_speech(name, speaker, date, location, file_path, text):
     # Insert to Speech table
+    # TODO: remember to set date format
     speech = execute_query(NEW_SPEECH, (name, speaker, date, location, file_path), True)
 
     # Go over the speech actual text and index it

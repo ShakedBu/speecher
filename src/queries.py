@@ -7,6 +7,7 @@ ADD_WORD_TO_SPEECH = '''INSERT INTO public."Word_in_Speech"(
 word_id, speech_id, paragraph, sentence, index_in_sentence, prefix, suffix)
 VALUES (?, ?, ?, ?, ?, ?, ?);'''
 
+# TODO: write this super important query
 SEARCH_SPEECH = ''''''
 
 # Words
