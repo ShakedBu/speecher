@@ -5,7 +5,8 @@ VALUES (?, ?, ?, ?, ?, ?);
 
 NEW_WORD = '''INSERT INTO public."Word"(
 word_id, word) 
-VALUES (?, ?);'''
+VALUES (?, ?)
+ON CONFLICT (word) DO NOTHING;'''
 
 NEW_PHRASE_PART = '''INSERT INTO public."Word_Phrase"(
 index, phrase_id, word_id)
