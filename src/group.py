@@ -15,5 +15,5 @@ def create_new_group(name, words):
         execute_query((ADD_WORD_TO_GROUP, (group_id, word[0])), True)
 
 
-def get_group(query):
+def get_groups(query):
     return execute_query((SEARCH_GROUP, query))

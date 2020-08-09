@@ -38,3 +38,12 @@ VALUES (?, ?);'''
 SEARCH_GROUP = '''SELECT group_id, group_name
 FROM public."Group"
 where group_name like '%?%';'''
+
+SEARCH_PHRASE = '''select index, word
+from public."Word_Phrase" as a
+join public."Word" as b on a.word_id = b.word_id
+where phrase_id = (sELECT phrase_id
+FROM public."Word_Phrase" as a
+join public."Word" as b on a.word_id = b.word_id
+where word like '%?%')
+order by index;'''

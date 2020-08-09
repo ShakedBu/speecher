@@ -47,3 +47,7 @@ def create_new_speech(name, speaker, date, location, file_path, text):
                 word_index += 1
             sentence_index += 1
         paragraph_index += 1
+
+
+def search_speech(query):
+    # Search
