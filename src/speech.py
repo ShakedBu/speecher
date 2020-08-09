@@ -50,4 +50,4 @@ def create_new_speech(name, speaker, date, location, file_path, text):
 
 
 def search_speech(query):
-    # Search
+    return ''
