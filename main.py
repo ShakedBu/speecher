@@ -1,8 +1,6 @@
 from flask import request, Flask
 from flask_restful import reqparse, abort, Api, Resource
 
-from src.DBUtils import call_db
-
 app = Flask(__name__)
 api = Api(app)
 parser = reqparse.RequestParser()
@@ -18,7 +16,6 @@ class Phrase(Resource):
 
 class Speech(Resource):
     def get(self):
-        call_db()
         return {'name': 'speech'}
 
     def post(self):

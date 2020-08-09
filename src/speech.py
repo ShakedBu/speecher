@@ -1,7 +1,7 @@
 import re
 
 from src.DBUtils import execute_query
-from src.queries import NEW_SPEECH, FIND_WORD, LAST_WORD_INDEX, NEW_WORD, ADD_WORD_TO_SPEECH
+from src.queries import NEW_SPEECH, LAST_WORD_INDEX, NEW_WORD, ADD_WORD_TO_SPEECH
 
 
 def create_new_speech(name, speaker, date, location, file_path, text):
