@@ -1,7 +1,7 @@
 import psycopg2
 
 
-def execute_query(query, is_single_row=False):
+def execute_query(query, is_fetch=False, is_single_row=False):
     records = None
     try:
         # Open connection to our database
@@ -10,15 +10,16 @@ def execute_query(query, is_single_row=False):
                                       host="127.0.0.1",
                                       port="5432",
                                       database="speecher")
-        cursor = connection.cursor('cursor')
+        cursor = connection.cursor()
 
         # Open a cursor to perform database operations
         cursor.execute(query)
 
-        if is_single_row:
-            records = cursor.fetchone()
-        else:
-            records = cursor.fetchall()
+        if is_fetch:
+            if is_single_row:
+                records = cursor.fetchone()
+            else:
+                records = cursor.fetchall()
 
         # Make the changes to the database if insert action
         if 'INSERT' in query:

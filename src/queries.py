@@ -6,12 +6,13 @@ returning speech_id;'''
 
 ADD_WORD_TO_SPEECH = '''INSERT INTO public."Word_in_Speech"(
 word_id, speech_id, paragraph, sentence, index_in_sentence, prefix, suffix)
-VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')
-returning index_in_sentence'''
+VALUES {} '''
+
+ADD_WORD_TO_SPEECH_VAL = ''' ('{}', '{}', '{}', '{}', '{}', '{}', '{}'),'''
 
 GET_SPEECH = '''SELECT b.word, paragraph, sentence, index_in_sentence, prefix, suffix FROM public."Word_in_Speech" as a
 join public."Word" as b on a.word_id = b.word_id
-WHERE speech_id = '9' ORDER BY paragraph, sentence, index_in_sentence;'''
+WHERE speech_id = '{}' ORDER BY paragraph, sentence, index_in_sentence;'''
 
 # TODO: write this super important query
 SEARCH_SPEECH = ''''''
