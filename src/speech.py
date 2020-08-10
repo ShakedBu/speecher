@@ -1,53 +1,89 @@
 import re
 
 from src.DBUtils import execute_query
-from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, GET_WORD, SEARCH_SPEECH
+from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, GET_WORD, SEARCH_SPEECH, GET_SPEECH
 
 
-def create_new_speech(name, speaker, date, location, file_path, text):
+def create_new_speech(name, speaker, date, location, file_path):
     # Insert to Speech table
     # TODO: remember to set date format
-    speech = execute_query(NEW_SPEECH, (name, speaker, date, location, file_path), True)
+    # TODO: set speech_name as unique
+    speech = execute_query(NEW_SPEECH.format(name, speaker, date, location, file_path), True)
+    speech_id = speech[0]
 
-    # Go over the speech actual text and index it
-    paragraphs = text.split('\n\n')
+    # Get the tst from the file
+    file = open(file_path, 'r', encoding="utf8")
+    try:
+        paragraphs = file.readlines()
+    finally:
+        file.close()
+
+    # paragraphs = text.split('\n\n')
     paragraph_index = 1
 
     # Go over each paragraph
     for curr_paragraph in paragraphs:
-        # Split to sentences
-        sentences = re.split('[.?!]', curr_paragraph)
-        sentence_index = 1
 
-        # Go over each sentence
-        for curr_sentence in sentences:
-            # Split to words
-            words = curr_sentence.split()
-            word_index = 1
+        if curr_paragraph != '\n':
+            # Split to sentences
+            sentences = re.split('([\\S]+?[[\\S\\s]+?(?:[\\.?!]))', curr_paragraph)
+            sentence_index = 1
+            # Go over each sentence
+            for curr_sentence in sentences:
 
-            # Go over the words
-            for curr_word in words:
-                # Get suffix and prefix and actual word
-                prefix, actual_word, suffix = re.split(curr_word, '(\\W)(\\w*)(\\W*)')
+                if curr_sentence != "" and curr_sentence != " ":
+                    # Split to words
+                    words = curr_sentence.split()
+                    word_index = 1
 
-                # Try to find the word in the DB
-                word = execute_query((GET_WORD, actual_word), True)
+                    # Go over the words
+                    for curr_word in words:
 
-                # If found - gets id otherwise adds it
-                if word[0] != 0:
-                    word_id = word[0]
-                else:
-                    word = execute_query((NEW_WORD, (word_id, actual_word), True))
-                    word_id = word[0]
+                        if curr_word != "":
+                            # Get suffix and prefix and actual word
+                            actual_word = re.findall('(\\w*)', curr_word)[0]
+                            word_parts = re.split('(\\W*)(\\W*)(\\w*)', curr_word)
+                            word_parts = list(filter(None, word_parts))
+                            prefix = '' if word_parts[0] == actual_word else word_parts[0]
+                            suffix = word_parts[-1] if word_parts[-1] != actual_word else ''
 
-                # Add the word into the speech in DB
-                execute_query((ADD_WORD_TO_SPEECH, (word_id, speech[0], paragraph_index,
-                                                    sentence_index, word_index, prefix, suffix)),
-                              True)
+                            # Try to find the word in the DB
+                            word = execute_query(GET_WORD.format(actual_word), True)
 
-                word_index += 1
-            sentence_index += 1
-        paragraph_index += 1
+                            # If found - gets id otherwise adds it
+                            if word is not None:
+                                word_id = word[0]
+                            else:
+                                word = execute_query(NEW_WORD.format(actual_word, len(actual_word)), True)
+                                word_id = word[0]
+
+                            # Add the word into the speech in DB
+                            execute_query((ADD_WORD_TO_SPEECH.format(word_id, speech_id, paragraph_index,
+                                                                     sentence_index, word_index, prefix, suffix)),
+                                          True)
+
+                            word_index += 1
+                    sentence_index += 1
+            paragraph_index += 1
+
+
+def get_speech(speech_id):
+    words = execute_query(GET_SPEECH.format(speech_id))
+    full_speech = ""
+    curr_paragraph = 1
+
+    # Builds the speech back
+    for curr_word in words:
+        # If its an end of the paragraph
+        if curr_word[1] == curr_paragraph:
+            full_speech = "{} {}".format(full_speech,
+                                         curr_word[4].strip() + curr_word[0].strip() + curr_word[5].strip())
+        else:
+            full_speech = "{}\n\n{}".format(full_speech,
+                                              curr_word[4].strip() + curr_word[0].strip() + curr_word[5].strip())
+            curr_paragraph = curr_word[1]
+
+    return full_speech
 
 
 def search_speech(query):

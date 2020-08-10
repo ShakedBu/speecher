@@ -1,6 +1,8 @@
 from flask import request, Flask
 from flask_restful import reqparse, abort, Api, Resource
 
+from src.speech import create_new_speech, get_speech
+
 app = Flask(__name__)
 api = Api(app)
 parser = reqparse.RequestParser()
@@ -24,10 +26,11 @@ class Group(Resource):
 
 class Speech(Resource):
     def get(self):
-        return {'name': 'speech'}
+        return get_speech(request.args['id'])
 
     def post(self):
-        args = parser.parse_args()
+        data = request.get_json()
+        create_new_speech(data['name'], data['speaker'], data['date'], data['location'], data['file_path'])
 
 
 api.add_resource(Phrase, '/phrase')

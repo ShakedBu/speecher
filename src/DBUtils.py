@@ -2,6 +2,7 @@ import psycopg2
 
 
 def execute_query(query, is_single_row=False):
+    records = None
     try:
         # Open connection to our database
         connection = psycopg2.connect(user="postgres",
@@ -9,7 +10,7 @@ def execute_query(query, is_single_row=False):
                                       host="127.0.0.1",
                                       port="5432",
                                       database="speecher")
-        cursor = connection.cursor()
+        cursor = connection.cursor('cursor')
 
         # Open a cursor to perform database operations
         cursor.execute(query)
