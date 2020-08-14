@@ -5,17 +5,20 @@ VALUES ((SELECT max(speech_id)+1 from public."Speech"), '{}', '{}', '{}', '{}', 
 returning speech_id;'''
 
 ADD_WORD_TO_SPEECH = '''INSERT INTO public."Word_in_Speech"(
-word_id, speech_id, paragraph, sentence, index_in_sentence, prefix, suffix)
+word_id, speech_id, paragraph, sentence, index_in_sentence, actual_word)
 VALUES {} '''
 
-ADD_WORD_TO_SPEECH_VAL = ''' ('{}', '{}', '{}', '{}', '{}', '{}', '{}'),'''
+ADD_WORD_TO_SPEECH_VAL = ''' ('{}', '{}', '{}', '{}', '{}', '{}'),'''
 
-GET_SPEECH = '''SELECT b.word, paragraph, sentence, index_in_sentence, prefix, suffix FROM public."Word_in_Speech" as a
-join public."Word" as b on a.word_id = b.word_id
+GET_SPEECH = '''SELECT paragraph, sentence, index_in_sentence, actual_word FROM public."Word_in_Speech"
 WHERE speech_id = '{}' ORDER BY paragraph, sentence, index_in_sentence;'''
 
 # TODO: write this super important query
-SEARCH_SPEECH = ''''''
+SEARCH_SPEECH = '''SELECT distinct b.speech_id, paragraph, sentence, index_in_sentence
+FROM public."Speech" as a
+join public."Word_in_Speech" as b on a.speech_id = b.speech_id
+join public."Word" as c on b.word_id = c.word_id
+where speech_name like '%{query}%' or speaker like '%{query}%' or word like '%{query}%' '''
 
 # Words
 NEW_WORD = '''INSERT INTO public."Word"(

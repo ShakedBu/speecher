@@ -8,7 +8,6 @@ from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, \
 def create_new_speech(name, speaker, date, location, file_path):
     # Insert to Speech table
     # TODO: remember to set date format
-    # TODO: set speech_name as unique
     speech = execute_query(NEW_SPEECH.format(name, speaker, date, location, file_path), True, True)
     speech_id = speech[0]
 
@@ -43,25 +42,23 @@ def create_new_speech(name, speaker, date, location, file_path):
 
                         if curr_word != "":
                             # Get suffix and prefix and actual word
-                            actual_word = re.findall('(\\w*)', curr_word)[0]
-                            word_parts = re.split('(\\W*)(\\W*)(\\w*)', curr_word)
-                            word_parts = list(filter(None, word_parts))
-                            prefix = '' if word_parts[0] == actual_word else word_parts[0]
-                            suffix = word_parts[-1] if word_parts[-1] != actual_word else ''
+                            actual_word = curr_word
+                            # TODO: lower case
+                            only_word = re.findall('(\\w*)', curr_word)[0]
 
                             # Try to find the word in the DB
-                            word = execute_query(GET_WORD.format(actual_word), True, True)
+                            word = execute_query(GET_WORD.format(only_word), True, True)
 
                             # If found - gets id otherwise adds it
                             if word is not None:
                                 word_id = word[0]
                             else:
-                                word = execute_query(NEW_WORD.format(actual_word, len(actual_word)), True, True)
+                                word = execute_query(NEW_WORD.format(only_word, len(only_word)), True, True)
                                 word_id = word[0]
 
                             sentence_insert += ADD_WORD_TO_SPEECH_VAL.format(word_id, speech_id,
                                                                              paragraph_index, sentence_index,
-                                                                             word_index, prefix, suffix)
+                                                                             word_index, actual_word)
                             word_index += 1
 
                     # Add the whole sentence to the DB
@@ -79,11 +76,9 @@ def get_speech(speech_id):
     for curr_word in words:
         # If its an end of the paragraph
         if curr_word[1] == curr_paragraph:
-            full_speech = "{} {}".format(full_speech,
-                                         curr_word[4].strip() + curr_word[0].strip() + curr_word[5].strip())
+            full_speech = "{} {}".format(full_speech, curr_word[3].strip())
         else:
-            full_speech = "{}\n\n{}".format(full_speech,
-                                            curr_word[4].strip() + curr_word[0].strip() + curr_word[5].strip())
+            full_speech = "{}\n\n{}".format(full_speech, curr_word[3].strip())
             curr_paragraph = curr_word[1]
 
     return full_speech
