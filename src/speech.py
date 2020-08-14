@@ -41,7 +41,6 @@ def create_new_speech(name, speaker, date, location, file_path):
                     for curr_word in words:
 
                         if curr_word != "":
-                            # Get suffix and prefix and actual word
                             actual_word = curr_word
                             # TODO: lower case
                             only_word = re.findall('(\\w*)', curr_word)[0]
