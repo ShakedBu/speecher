@@ -42,8 +42,7 @@ def create_new_speech(name, speaker, date, location, file_path):
 
                         if curr_word != "":
                             actual_word = curr_word
-                            # TODO: lower case
-                            only_word = re.findall('(\\w*)', curr_word)[0]
+                            only_word = re.findall('(\\w*)', curr_word)[0].lower()
 
                             # Try to find the word in the DB
                             word = execute_query(GET_WORD.format(only_word), True, True)
