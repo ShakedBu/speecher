@@ -62,3 +62,8 @@ VALUES ('{}', '{}');'''
 SEARCH_GROUP = '''SELECT group_id, group_name
 FROM public."Group"
 where group_name like '%'{}'%';'''
+
+GET_GROUP = '''SELECT b.word_id, word
+FROM public."Word_in_Group" as a
+join public."Word" as b on a.word_id = b.word_id
+where group_id = '{}';'''

@@ -8,12 +8,12 @@ def create_new_phrase(words):
 
     for curr_word in words:
         # Get word
-        word = execute_query((GET_WORD, curr_word), True, True)
+        word = execute_query(GET_WORD.format(curr_word), True, True)
 
         # Add word to phrase
-        execute_query((NEW_PHRASE_PART, (word_index, phrase_id[0], word[0])))
+        execute_query(NEW_PHRASE_PART.format(word_index, phrase_id[0], word[0]))
         word_index += 1
 
 
 def get_phrases(query):
-    return execute_query((SEARCH_PHRASE, query))
+    return execute_query(SEARCH_PHRASE.format(query))

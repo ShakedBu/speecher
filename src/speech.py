@@ -8,7 +8,8 @@ from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, \
 def create_new_speech(name, speaker, date, location, file_path):
     # Insert to Speech table
     # TODO: remember to set date format
-    speech = execute_query(NEW_SPEECH.format(name, speaker, date, location, file_path), True, True)
+    db_date = date.strftime('YYYY-MM-DD')
+    speech = execute_query(NEW_SPEECH.format(name, speaker, db_date, location, file_path), True, True)
     speech_id = speech[0]
 
     # Get the tst from the file
