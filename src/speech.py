@@ -27,7 +27,7 @@ def create_new_speech(name, speaker, date, location, file_path):
 
         if curr_paragraph != '\n':
             # Split to sentences
-            sentences = re.split('([\\S]+?[[\\S\\s]+?(?:[\\.?!]))', curr_paragraph)
+            sentences = re.split('([\\S]+?[[\\S\\s]+?(?:[.?!]))', curr_paragraph)
             sentence_index = 1
             # Go over each sentence
             for curr_sentence in sentences:
@@ -84,4 +84,10 @@ def get_speech(speech_id):
 
 
 def search_speech(query):
+    results = execute_query((SEARCH_SPEECH, query))
+
+    for result in results:
+        # TODO: Get the sentence and put b around the word appearance
+        1 + 1
+
     return execute_query((SEARCH_SPEECH, query))

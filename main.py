@@ -3,7 +3,7 @@ from flask_restful import reqparse, abort, Api, Resource
 
 from src.group import create_new_group, get_group, search_groups
 from src.phrase import create_new_phrase, get_phrases
-from src.speech import create_new_speech, get_speech
+from src.speech import create_new_speech, get_speech, search_speech
 
 app = Flask(__name__)
 api = Api(app)
@@ -34,7 +34,11 @@ class Group(Resource):
 
 class Speech(Resource):
     def get(self):
-        return get_speech(request.args['id'])
+        if request.args['id'] != "":
+            return get_speech(request.args['id'])
+
+        elif request.args['query'] != "":
+            return search_speech(request.args['query'])
 
     def post(self):
         data = request.get_json()
