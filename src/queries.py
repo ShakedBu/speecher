@@ -30,6 +30,12 @@ from public."Word_in_Speech"
 where speech_id = '{}' and paragraph = '{}' and sentence = '{}'
 order by speech_id, paragraph, sentence;'''
 
+GET_SPEECH_WORDS = '''SELECT distinct a.word_id, word
+FROM public."Word_in_Speech" as a
+JOIN public."Word" as b on a.word_id = b.word_id
+WHERE speech_id = '{}'
+order by word;'''
+
 # Words
 NEW_WORD = '''INSERT INTO public."Word"(
 word_id, word, length)
@@ -41,9 +47,10 @@ GET_WORD = '''SELECT word_id FROM public."Word" WHERE word = ('{}')'''
 
 LAST_WORD_INDEX = '''SELECT MAX(word_id) FROM public."Word"'''
 
-GET_SPEECH_WORDS = ''''''
-
-GET_WORD_BY_LOC = ''''''
+GET_WORD_BY_LOC = '''SELECT a.word_id, word
+FROM public."Word_in_Speech" as a
+JOIN public."Word" as b on a.word_id = b.word_id
+WHERE speech_id = '{}' and paragraph = '{}' and sentence = '{}' and index_in_sentence = '{}';'''
 
 # Phrases
 NEW_PHRASE_PART = '''INSERT INTO public."Word_Phrase"(
@@ -81,3 +88,6 @@ GET_GROUP = '''SELECT b.word_id, word
 FROM public."Word_in_Group" as a
 join public."Word" as b on a.word_id = b.word_id
 where group_id = '{}';'''
+
+GET_ALL_GROUPS = '''SELECT group_id, group_name
+FROM public."Group";'''
