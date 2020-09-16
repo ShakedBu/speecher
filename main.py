@@ -12,7 +12,7 @@ parser = reqparse.RequestParser()
 
 class Word(Resource):
     def get(self):
-        # TODO: Get all of the words, or by speech
+        # TODO: Get all of the words by speech
         # TODO: Get word by location!
         return ''
 
@@ -53,6 +53,7 @@ class Speech(Resource):
 
 
 # TODO: Return statistics about number of words or characters in sentences etc...
+# TODO: Implement the extra subject (XML?)
 
 api.add_resource(Word, '/word')
 api.add_resource(Phrase, '/phrase')
