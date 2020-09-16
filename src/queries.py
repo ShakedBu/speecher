@@ -13,7 +13,6 @@ ADD_WORD_TO_SPEECH_VAL = ''' ('{}', '{}', '{}', '{}', '{}', '{}'),'''
 GET_SPEECH = '''SELECT paragraph, sentence, index_in_sentence, actual_word FROM public."Word_in_Speech"
 WHERE speech_id = '{}' ORDER BY paragraph, sentence, index_in_sentence;'''
 
-# TODO: write this super important query
 SEARCH_SPEECH = '''SELECT speech_name, speaker, location, b.speech_id, paragraph, sentence
 FROM public."Speech" as a
 join public."Word_in_Speech" as b on a.speech_id = b.speech_id
@@ -41,6 +40,10 @@ returning word_id;'''
 GET_WORD = '''SELECT word_id FROM public."Word" WHERE word = ('{}')'''
 
 LAST_WORD_INDEX = '''SELECT MAX(word_id) FROM public."Word"'''
+
+GET_SPEECH_WORDS = ''''''
+
+GET_WORD_BY_LOC = ''''''
 
 # Phrases
 NEW_PHRASE_PART = '''INSERT INTO public."Word_Phrase"(

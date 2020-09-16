@@ -10,9 +10,16 @@ api = Api(app)
 parser = reqparse.RequestParser()
 
 
+class Word(Resource):
+    def get(self):
+        # TODO: Get all of the words, or by speech
+        # TODO: Get word by location!
+        return ''
+
+
 class Phrase(Resource):
     def get(self):
-        return get_phrases(request.args['query'])
+        return get_phrases(request.args['speech_id'], request.args['query'])
 
     def post(self):
         data = request.get_json()
@@ -45,6 +52,9 @@ class Speech(Resource):
         create_new_speech(data['name'], data['speaker'], data['date'], data['location'], data['file_path'])
 
 
+# TODO: Return statistics about number of words or characters in sentences etc...
+
+api.add_resource(Word, '/word')
 api.add_resource(Phrase, '/phrase')
 api.add_resource(Group, '/group')
 api.add_resource(Speech, '/speech')

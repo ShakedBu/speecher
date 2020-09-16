@@ -15,5 +15,5 @@ def create_new_phrase(words):
         word_index += 1
 
 
-def get_phrases(query):
+def get_phrases(speech_id, query):
     return execute_query(SEARCH_PHRASE.format(query))
