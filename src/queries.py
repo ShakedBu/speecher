@@ -14,11 +14,22 @@ GET_SPEECH = '''SELECT paragraph, sentence, index_in_sentence, actual_word FROM 
 WHERE speech_id = '{}' ORDER BY paragraph, sentence, index_in_sentence;'''
 
 # TODO: write this super important query
-SEARCH_SPEECH = '''SELECT distinct b.speech_id, paragraph, sentence, index_in_sentence
+SEARCH_SPEECH = '''SELECT speech_name, speaker, location, b.speech_id, paragraph, sentence
 FROM public."Speech" as a
 join public."Word_in_Speech" as b on a.speech_id = b.speech_id
 join public."Word" as c on b.word_id = c.word_id
-where speech_name like '%{query}%' or speaker like '%{query}%' or word like '%{query}%' '''
+where word like '%{}%' 
+union select speech_name, speaker, location, speech_id, 0, 0
+FROM public."Speech"
+where lower(speech_name) like '%{}%' or 
+lower(speaker) like '%{}%' or 
+lower(location) like '%{}%'
+order by speech_id, paragraph, sentence;'''
+
+GET_SENTENCE = '''select actual_word
+from public."Word_in_Speech"
+where speech_id = '{}' and paragraph = '{}' and sentence = '{}'
+order by speech_id, paragraph, sentence;'''
 
 # Words
 NEW_WORD = '''INSERT INTO public."Word"(

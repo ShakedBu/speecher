@@ -21,10 +21,10 @@ class Phrase(Resource):
 
 class Group(Resource):
     def get(self):
-        if request.args['id'] != "":
+        if 'id' in request.args:
             return get_group(request.args['id'])
 
-        elif request.args['query'] != "":
+        elif 'query' in request.args:
             return search_groups(request.args['query'])
 
     def post(self):
@@ -34,10 +34,10 @@ class Group(Resource):
 
 class Speech(Resource):
     def get(self):
-        if request.args['id'] != "":
+        if 'id' in request.args:
             return get_speech(request.args['id'])
 
-        elif request.args['query'] != "":
+        elif 'query' in request.args:
             return search_speech(request.args['query'])
 
     def post(self):

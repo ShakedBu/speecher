@@ -2,14 +2,12 @@ import re
 
 from src.DBUtils import execute_query
 from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, \
-    GET_WORD, SEARCH_SPEECH, GET_SPEECH, ADD_WORD_TO_SPEECH_VAL
+    GET_WORD, SEARCH_SPEECH, GET_SPEECH, ADD_WORD_TO_SPEECH_VAL, GET_SENTENCE
 
 
 def create_new_speech(name, speaker, date, location, file_path):
     # Insert to Speech table
-    # TODO: remember to set date format
-    db_date = date.strftime('YYYY-MM-DD')
-    speech = execute_query(NEW_SPEECH.format(name, speaker, db_date, location, file_path), True, True)
+    speech = execute_query(NEW_SPEECH.format(name, speaker, date, location, file_path), True, True)
     speech_id = speech[0]
 
     # Get the tst from the file
@@ -84,10 +82,27 @@ def get_speech(speech_id):
 
 
 def search_speech(query):
-    results = execute_query((SEARCH_SPEECH, query))
+    results = {}
+    sentences = execute_query(SEARCH_SPEECH.format(query, query, query, query), True)
 
-    for result in results:
-        # TODO: Get the sentence and put b around the word appearance
-        1 + 1
+    for sentence in sentences:
+        speech_id = sentence[3]
 
-    return execute_query((SEARCH_SPEECH, query))
+        # Add the speech to the results
+        if speech_id not in results:
+            results[speech_id] = {'id': speech_id, 'name': sentence[0].strip(), 'speaker': sentence[1].strip(),
+                                  'location': sentence[2].strip(), 'text': ''}
+        # If there is a sentence, add to text
+        if sentence[4] != 0:
+            words_in_sentence = execute_query(GET_SENTENCE.format(speech_id, sentence[4], sentence[5]), True)
+            full_sentence = ""
+
+            # Build the sentence
+            for curr_word in words_in_sentence:
+                full_sentence = "{} {}".format(full_sentence, curr_word[0].strip())
+
+            full_sentence = full_sentence.replace(query, "<b>" + query + "</b>")
+
+            results[speech_id]['text'] = "{}...{}".format(results[speech_id]['text'], full_sentence)
+
+    return results
