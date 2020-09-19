@@ -1,4 +1,4 @@
-from flask import request, Flask
+from flask import request, Flask, Response, json, make_response
 from flask_restful import reqparse, abort, Api, Resource
 
 from src.group import create_new_group, get_group, search_groups
@@ -45,7 +45,10 @@ class Speech(Resource):
             return get_speech(request.args['id'])
 
         elif 'query' in request.args:
-            return search_speech(request.args['query'])
+            result = search_speech(request.args['query'])
+            resp = Response(json.dumps(result), status=200, mimetype='application/json')
+            resp.headers['Access-Control-Allow-Origin'] = '*'
+            return resp
 
     def post(self):
         data = request.get_json()
