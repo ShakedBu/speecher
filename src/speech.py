@@ -108,7 +108,7 @@ def search_speech(query):
                 full_sentence = "{} {}".format(full_sentence, curr_word[0].strip())
 
             # Make the search word as bold
-            full_sentence = full_sentence.replace(query, "<strong>" + query + "</strong>")
+            # full_sentence = full_sentence.replace(query, "<b>" + query + "</b>")
 
             # Add Sentence to results
             results[speech_id]['text'] = "{}...{}".format(results[speech_id]['text'], full_sentence)
