@@ -13,6 +13,10 @@ ADD_WORD_TO_SPEECH_VAL = ''' ('{}', '{}', '{}', '{}', '{}', '{}'),'''
 GET_SPEECH = '''SELECT paragraph, sentence, index_in_sentence, actual_word FROM public."Word_in_Speech"
 WHERE speech_id = '{}' ORDER BY paragraph, sentence, index_in_sentence;'''
 
+GET_SPEECH_DETAILS = '''SELECT speech_name, speaker, location, date
+FROM public."Speech"
+WHERE speech_id = '{}' '''
+
 SEARCH_SPEECH = '''SELECT speech_name, speaker, location, b.speech_id, paragraph, sentence
 FROM public."Speech" as a
 join public."Word_in_Speech" as b on a.speech_id = b.speech_id

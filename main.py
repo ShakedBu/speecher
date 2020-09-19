@@ -1,4 +1,4 @@
-from flask import request, Flask, Response, json, make_response
+from flask import request, Flask, Response, json, make_response, jsonify
 from flask_restful import reqparse, abort, Api, Resource
 
 from src.group import create_new_group, get_group, search_groups
@@ -42,7 +42,7 @@ class Group(Resource):
 class Speech(Resource):
     def get(self):
         if 'id' in request.args:
-            return get_speech(request.args['id'])
+            return jsonify(get_speech(request.args['id']))
 
         elif 'query' in request.args:
             result = search_speech(request.args['query'])

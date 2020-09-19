@@ -2,7 +2,7 @@ import re
 
 from src.DBUtils import execute_query
 from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, \
-    GET_WORD, SEARCH_SPEECH, GET_SPEECH, ADD_WORD_TO_SPEECH_VAL, GET_SENTENCE
+    GET_WORD, SEARCH_SPEECH, GET_SPEECH, ADD_WORD_TO_SPEECH_VAL, GET_SENTENCE, GET_SPEECH_DETAILS
 
 
 def create_new_speech(name, speaker, date, location, file_path):
@@ -65,6 +65,7 @@ def create_new_speech(name, speaker, date, location, file_path):
 
 
 def get_speech(speech_id):
+    speech_details = execute_query(GET_SPEECH_DETAILS.format(speech_id), True, True)
     words = execute_query(GET_SPEECH.format(speech_id), True)
     full_speech = ""
     curr_paragraph = 1
@@ -78,7 +79,12 @@ def get_speech(speech_id):
             full_speech = "{}\n\n{}".format(full_speech, curr_word[3].strip())
             curr_paragraph = curr_word[1]
 
-    return full_speech
+    return {'speech_id': speech_id,
+            'name': speech_details[0].strip(),
+            'speaker': speech_details[1].strip(),
+            'location': speech_details[2].strip(),
+            'date': speech_details[3],
+            'full_text': full_speech}
 
 
 def search_speech(query):
