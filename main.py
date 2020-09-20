@@ -1,11 +1,13 @@
 from flask import request, Flask, Response, json, make_response, jsonify
 from flask_restful import reqparse, abort, Api, Resource
+from flask_cors import CORS
 
 from src.group import create_new_group, get_group, search_groups
 from src.phrase import create_new_phrase, get_phrases
 from src.speech import create_new_speech, get_speech, search_speech
 
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 parser = reqparse.RequestParser()
 
@@ -42,16 +44,10 @@ class Group(Resource):
 class Speech(Resource):
     def get(self):
         if 'id' in request.args:
-            result = get_speech(request.args['id'])
-            resp = Response(json.dumps(result), status=200, mimetype='application/json')
-            resp.headers['Access-Control-Allow-Origin'] = '*'
-            return resp
+            return jsonify(get_speech(request.args['id']))
 
         elif 'query' in request.args:
-            result = search_speech(request.args['query'])
-            resp = Response(json.dumps(result), status=200, mimetype='application/json')
-            resp.headers['Access-Control-Allow-Origin'] = '*'
-            return resp
+            return search_speech(request.args['query'])
 
     def post(self):
         data = request.get_json()
