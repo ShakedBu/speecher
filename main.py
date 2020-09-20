@@ -42,7 +42,10 @@ class Group(Resource):
 class Speech(Resource):
     def get(self):
         if 'id' in request.args:
-            return jsonify(get_speech(request.args['id']))
+            result = get_speech(request.args['id'])
+            resp = Response(json.dumps(result), status=200, mimetype='application/json')
+            resp.headers['Access-Control-Allow-Origin'] = '*'
+            return resp
 
         elif 'query' in request.args:
             result = search_speech(request.args['query'])
@@ -53,6 +56,11 @@ class Speech(Resource):
     def post(self):
         data = request.get_json()
         create_new_speech(data['name'], data['speaker'], data['date'], data['location'], data['file_path'])
+
+    # @app.after_request
+    # def allow_cors(self, response):
+    #     response.headers['Access-Control-Allow-Origin'] = '*'
+    #     return response
 
 
 # TODO: Return statistics about number of words or characters in sentences etc...
