@@ -21,7 +21,7 @@ SEARCH_SPEECH = '''SELECT speech_name, speaker, location, b.speech_id, paragraph
 FROM public."Speech" as a
 join public."Word_in_Speech" as b on a.speech_id = b.speech_id
 join public."Word" as c on b.word_id = c.word_id
-where word like '%{}%' 
+where word like lower('%{}%')
 union select speech_name, speaker, location, speech_id, 0, 0
 FROM public."Speech"
 where lower(speech_name) like '%{}%' or 
