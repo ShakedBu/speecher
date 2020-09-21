@@ -5,8 +5,8 @@ def execute_query(query, is_fetch=False, is_single_row=False):
     records = None
     try:
         # Open connection to our database
-        connection = psycopg2.connect(user="postgres",
-                                      password="aesC1995",
+        connection = psycopg2.connect(user="speecher",
+                                      password="Speecher1!",
                                       host="127.0.0.1",
                                       port="5432",
                                       database="speecher")
