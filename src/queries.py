@@ -24,9 +24,9 @@ join public."Word" as c on b.word_id = c.word_id
 where word like lower('%{}%')
 union select speech_name, speaker, location, speech_id, 0, 0
 FROM public."Speech"
-where lower(speech_name) like '%{}%' or 
-lower(speaker) like '%{}%' or 
-lower(location) like '%{}%'
+where lower(speech_name) like lower('%{}%') or 
+lower(speaker) like lower('%{}%') or 
+lower(location) like lower('%{}%')
 order by speech_id, paragraph, sentence;'''
 
 GET_SENTENCE = '''select actual_word
