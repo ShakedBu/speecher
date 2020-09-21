@@ -2,7 +2,7 @@ from flask import request, Flask, Response, json, make_response, jsonify
 from flask_restful import reqparse, abort, Api, Resource
 from flask_cors import CORS
 
-from src.group import create_new_group, get_group, search_groups
+from src.group import create_new_group, get_group, search_groups, add_words_to_group, remove_words_from_group
 from src.phrase import create_new_phrase, get_phrases
 from src.speech import create_new_speech, get_speech, search_speech
 
@@ -39,6 +39,13 @@ class Group(Resource):
     def post(self):
         data = request.get_json()
         create_new_group(data['name'], data['words'])
+
+    def put(self):
+        data = request.get_json()
+        if data['action'] == 'remove':
+            remove_words_from_group(data['name'], data['words'])
+        else:
+            add_words_to_group(data['name'], data['words'])
 
 
 class Speech(Resource):

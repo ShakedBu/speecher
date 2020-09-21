@@ -84,6 +84,9 @@ ADD_WORD_TO_GROUP = '''INSERT INTO public."Word_in_Group"(
 word_id, group_id)
 VALUES ('{}', '{}');'''
 
+DELETE_WORD_FROM_GROUP = '''DELETE FROM public."Word_in_Group"
+WHERE group_id = '{}' AND word_id = '{}';'''
+
 SEARCH_GROUP = '''SELECT group_id, group_name
 FROM public."Group"
 where group_name like '%'{}'%';'''
