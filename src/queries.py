@@ -56,6 +56,10 @@ FROM public."Word_in_Speech" as a
 JOIN public."Word" as b on a.word_id = b.word_id
 WHERE speech_id = '{}' and paragraph = '{}' and sentence = '{}' and index_in_sentence = '{}';'''
 
+GET_ALL_WORDS = '''SELECT word_id, word
+FROM public."Word"
+ORDER BY word;'''
+
 # Phrases
 NEW_PHRASE_PART = '''INSERT INTO public."Word_Phrase"(
 index, phrase_id, word_id)

@@ -15,15 +15,30 @@ def create_new_group(name, words):
         # Add to group
         execute_query(ADD_WORD_TO_GROUP.format(group_id, word[0]))
 
+    return group_id
+
 
 def search_groups(query):
+    results = []
+
     if query != "":
-        return execute_query(SEARCH_GROUP.format(query))
-    return execute_query(GET_ALL_GROUPS, True)
+        groups = execute_query(SEARCH_GROUP.format(query))
+    groups = execute_query(GET_ALL_GROUPS, True)
+
+    for group in groups:
+        results.append({'id': group[0], 'name': group[1]})
+
+    return results
 
 
 def get_group(group_id):
-    return execute_query(GET_GROUP.format(group_id))
+    results = []
+    words = execute_query(GET_GROUP.format(group_id), True)
+
+    for word in words:
+        results.append({'id': word[0], 'name': word[1]})
+
+    return results
 
 
 def add_words_to_group(group_id, words):

@@ -5,6 +5,7 @@ from flask_cors import CORS
 from src.group import create_new_group, get_group, search_groups, add_words_to_group, remove_words_from_group
 from src.phrase import create_new_phrase, get_phrases
 from src.speech import create_new_speech, get_speech, search_speech
+from src.word import get_all_words
 
 app = Flask(__name__)
 CORS(app)
@@ -14,9 +15,8 @@ parser = reqparse.RequestParser()
 
 class Word(Resource):
     def get(self):
-        # TODO: Get all of the words by speech
         # TODO: Get word by location!
-        return ''
+        return get_all_words()
 
 
 class Phrase(Resource):
@@ -43,9 +43,9 @@ class Group(Resource):
     def put(self):
         data = request.get_json()
         if data['action'] == 'remove':
-            remove_words_from_group(data['name'], data['words'])
+            remove_words_from_group(data['id'], data['words'])
         else:
-            add_words_to_group(data['name'], data['words'])
+            add_words_to_group(data['id'], data['words'])
 
 
 class Speech(Resource):
