@@ -43,7 +43,7 @@ def get_group(group_id):
 
 def add_words_to_group(group_id, words):
     for word in words:
-        execute_query(ADD_WORD_TO_GROUP.format(group_id, word))
+        execute_query(ADD_WORD_TO_GROUP.format(word, group_id))
 
 
 def remove_words_from_group(group_id, words):

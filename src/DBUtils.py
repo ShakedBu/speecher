@@ -22,7 +22,7 @@ def execute_query(query, is_fetch=False, is_single_row=False):
                 records = cursor.fetchall()
 
         # Make the changes to the database if insert action
-        if 'INSERT' in query:
+        if 'INSERT' in query or 'DELETE' in query:
             connection.commit()
 
     except (Exception, psycopg2.Error) as error:
