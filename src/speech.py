@@ -73,11 +73,11 @@ def get_speech(speech_id):
     # Builds the speech back
     for curr_word in words:
         # If its an end of the paragraph
-        if curr_word[1] == curr_paragraph:
+        if curr_word[0] == curr_paragraph:
             full_speech = "{} {}".format(full_speech, curr_word[3].strip())
         else:
             full_speech = "{}\n\n{}".format(full_speech, curr_word[3].strip())
-            curr_paragraph = curr_word[1]
+            curr_paragraph = curr_word[0]
 
     return {'speech_id': speech_id,
             'name': speech_details[0].strip(),
