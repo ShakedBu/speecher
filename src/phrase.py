@@ -3,15 +3,12 @@ from src.queries import LAST_PHRASE_INDEX, NEW_PHRASE_PART, GET_WORD, SEARCH_PHR
 
 
 def create_new_phrase(words):
-    phrase_id = execute_query(LAST_PHRASE_INDEX, True, True)
+    phrase_id = execute_query(LAST_PHRASE_INDEX, True, True)[0]
     word_index = 1
 
     for curr_word in words:
-        # Get word
-        word = execute_query(GET_WORD.format(curr_word), True, True)
-
         # Add word to phrase
-        execute_query(NEW_PHRASE_PART.format(word_index, phrase_id[0], word[0]))
+        execute_query(NEW_PHRASE_PART.format(word_index, phrase_id, curr_word))
         word_index += 1
 
 

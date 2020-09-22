@@ -65,7 +65,7 @@ NEW_PHRASE_PART = '''INSERT INTO public."Word_Phrase"(
 index, phrase_id, word_id)
 VALUES ('{}', '{}', '{}');'''
 
-LAST_PHRASE_INDEX = '''SELECT MAX(phrase_id) FROM public."Phrase"'''
+LAST_PHRASE_INDEX = '''SELECT MAX(phrase_id)+1 FROM public."Word_Phrase"'''
 
 # TODO: enable search by multiple words
 SEARCH_PHRASE = '''SELECT index, word
@@ -74,7 +74,7 @@ join public."Word" as b on a.word_id = b.word_id
 where phrase_id = (SELECT phrase_id
 FROM public."Word_Phrase" as a
 join public."Word" as b on a.word_id = b.word_id
-where word like '%'{}'%')
+where word like '%{}%')
 order by index;'''
 
 # Groups

@@ -60,11 +60,6 @@ class Speech(Resource):
         data = request.get_json()
         create_new_speech(data['name'], data['speaker'], data['date'], data['location'], data['file_path'])
 
-    # @app.after_request
-    # def allow_cors(self, response):
-    #     response.headers['Access-Control-Allow-Origin'] = '*'
-    #     return response
-
 
 # TODO: Return statistics about number of words or characters in sentences etc...
 # TODO: Implement the extra subject (XML?)
