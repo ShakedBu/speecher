@@ -26,8 +26,8 @@ def get_word_appearances_in_speech(speech_id, word):
         for word in close_words:
             some_sentence = "{} {}".format(some_sentence, word[0].strip())
 
-        results.append({'index': 0, 'paragraph': appearance[0], 'sentence': appearance[1], 'index': appearance[2],
-                        'some_sentence': some_sentence + '...'})
+        results.append({'paragraph': appearance[0], 'sentence': appearance[1], 'index': appearance[2],
+                        'some_sentence': some_sentence + '...', 'word': word})
 
     return results
 
