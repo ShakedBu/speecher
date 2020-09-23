@@ -60,6 +60,16 @@ GET_ALL_WORDS = '''SELECT word_id, word
 FROM public."Word"
 ORDER BY word;'''
 
+GET_ALL_WORDS_IN_SPEECH = '''SELECT paragraph, sentence, index_in_sentence
+FROM public."Word_in_Speech"
+where speech_id = '{}' and word like lower('%{}%')
+order by paragraph, sentence, index_in_sentence;'''
+
+GET_PARTIAL_SENTENCE = '''SELECT actual_word
+from public."Word_in_Speech"
+where speech_id = '{}' and paragraph = '{}' and sentence = '{}' and index_in_sentence - '{}' BT -2 and 2
+order by paragraph, sentence, index_in_sentence;'''
+
 # Phrases
 NEW_PHRASE_PART = '''INSERT INTO public."Word_Phrase"(
 index, phrase_id, word_id)
