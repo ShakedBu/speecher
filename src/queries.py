@@ -60,7 +60,7 @@ GET_ALL_WORDS = '''SELECT word_id, word
 FROM public."Word"
 ORDER BY word;'''
 
-GET_ALL_WORDS_IN_SPEECH = '''SELECT paragraph, sentence, index_in_sentence
+GET_WORD_APPEARANCES_IN_SPEECH = '''SELECT paragraph, sentence, index_in_sentence
 FROM public."Word_in_Speech"
 where speech_id = '{}' and word like lower('%{}%')
 order by paragraph, sentence, index_in_sentence;'''

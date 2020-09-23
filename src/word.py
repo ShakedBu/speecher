@@ -1,5 +1,6 @@
 from src.DBUtils import execute_query
-from .queries import GET_ALL_WORDS, GET_WORD_BY_LOC, GET_SENTENCE, GET_ALL_WORDS_IN_SPEECH, GET_PARTIAL_SENTENCE
+from .queries import GET_ALL_WORDS, GET_WORD_BY_LOC, GET_SENTENCE, GET_WORD_APPEARANCES_IN_SPEECH,\
+    GET_PARTIAL_SENTENCE, GET_SPEECH_WORDS
 
 
 def get_all_words():
@@ -14,7 +15,7 @@ def get_all_words():
 
 def get_word_in_speech(speech_id, word):
     results = []
-    word_appearances = execute_query(GET_ALL_WORDS_IN_SPEECH.format(speech_id, word), True)
+    word_appearances = execute_query(GET_WORD_APPEARANCES_IN_SPEECH.format(speech_id, word), True)
 
     # Go over the appearances and builds the results with full details
     for idx, appearance in word_appearances:
@@ -47,5 +48,10 @@ def get_word_by_location(speech_id, paragraph, sentence, index):
 
 
 def get_all_words_in_speech(speech_id):
-    # TODO: Get all of the words fromt eh speech
-    return ''
+    results = []
+    words = execute_query(GET_SPEECH_WORDS.format(speech_id), True)
+
+    for word in words:
+        results.append({'id': word[0], 'word': word[1].strip()})
+
+    return results
