@@ -13,12 +13,12 @@ def get_all_words():
     return results
 
 
-def get_word_in_speech(speech_id, word):
+def get_word_appearances_in_speech(speech_id, word):
     results = []
     word_appearances = execute_query(GET_WORD_APPEARANCES_IN_SPEECH.format(speech_id, word), True)
 
     # Go over the appearances and builds the results with full details
-    for idx, appearance in word_appearances:
+    for appearance in word_appearances:
         close_words = execute_query(GET_PARTIAL_SENTENCE.format(speech_id, appearance[0], appearance[1], appearance[2]),
                                     True)
         some_sentence = "..."
@@ -26,7 +26,7 @@ def get_word_in_speech(speech_id, word):
         for word in close_words:
             some_sentence = "{} {}".format(some_sentence, word[0].strip())
 
-        results.append({'index': idx, 'paragraph': appearance[0], 'sentence': appearance[1], 'index': appearance[2],
+        results.append({'index': 0, 'paragraph': appearance[0], 'sentence': appearance[1], 'index': appearance[2],
                         'some_sentence': some_sentence + '...'})
 
     return results

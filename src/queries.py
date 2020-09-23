@@ -62,12 +62,12 @@ ORDER BY word;'''
 
 GET_WORD_APPEARANCES_IN_SPEECH = '''SELECT paragraph, sentence, index_in_sentence
 FROM public."Word_in_Speech"
-where speech_id = '{}' and word like lower('%{}%')
+where speech_id = '{}' and lower(actual_word) like lower('%{}%')
 order by paragraph, sentence, index_in_sentence;'''
 
 GET_PARTIAL_SENTENCE = '''SELECT actual_word
 from public."Word_in_Speech"
-where speech_id = '{}' and paragraph = '{}' and sentence = '{}' and index_in_sentence - '{}' BT -2 and 2
+where speech_id = '{}' and paragraph = '{}' and sentence = '{}' and index_in_sentence - '{}' BETWEEN -2 and 2
 order by paragraph, sentence, index_in_sentence;'''
 
 # Phrases
