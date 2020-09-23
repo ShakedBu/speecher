@@ -71,12 +71,18 @@ class Speech(Resource):
 
 
 # TODO: Return statistics about number of words or characters in sentences etc...
+class Statistics(Resource):
+    def get(self):
+        return ''
+
+
 # TODO: Implement the extra subject (XML?)
 
 api.add_resource(Word, '/word')
 api.add_resource(Phrase, '/phrase')
 api.add_resource(Group, '/group')
 api.add_resource(Speech, '/speech')
+api.add_resource(Statistics, '/statistics')
 
 if __name__ == '__main__':
     app.run()
