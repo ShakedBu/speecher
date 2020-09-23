@@ -15,21 +15,17 @@ parser = reqparse.RequestParser()
 
 class Word(Resource):
     def get(self):
-        results = []
 
         if 'speech_id' in request.args:
             if 'paragraph' in request.args:
-                results = get_word_by_location(request.args['speech_id'], request.args['paragraph'],
-                                               request.args['sentence'], request.args['index'])
+                return get_word_by_location(request.args['speech_id'], request.args['paragraph'],
+                                            request.args['sentence'], request.args['index'])
             elif 'word' in request.args:
-                results = get_word_in_speech(request.args['speech_id'], request.args['word'])
-            else:
-                results = get_all_words_in_speech(request.args['speech_id'])
+                return get_word_in_speech(request.args['speech_id'], request.args['word'])
 
-        else:
-            results = get_all_words()
+            return get_all_words_in_speech(request.args['speech_id'])
 
-        return results
+        return get_all_words()
 
 
 class Phrase(Resource):
