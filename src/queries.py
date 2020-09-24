@@ -112,3 +112,10 @@ where group_id = '{}';'''
 
 GET_ALL_GROUPS = '''SELECT group_id, group_name
 FROM public."Group";'''
+
+# Statistics
+GET_ALL_COUNTS = '''select paragraph, sentence, count(word_id)
+from public."Word_in_Speech"
+where speech_id='{}'
+group by paragraph, sentence
+order by paragraph, sentence;'''

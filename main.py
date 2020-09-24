@@ -6,6 +6,7 @@ from src.group import create_new_group, get_group, search_groups, add_words_to_g
 from src.phrase import create_new_phrase, get_phrases
 from src.speech import create_new_speech, get_speech, search_speech
 from src.word import get_all_words, get_word_by_location, get_word_appearances_in_speech, get_all_words_in_speech
+from src.statistics import get_general_counts_by_speech
 
 app = Flask(__name__)
 CORS(app)
@@ -73,7 +74,8 @@ class Speech(Resource):
 # TODO: Return statistics about number of words or characters in sentences etc...
 class Statistics(Resource):
     def get(self):
-        return ''
+        if 'speech_id' in request.args:
+            return get_general_counts_by_speech(get_speech(request.args['speech_id']))
 
 
 # TODO: Implement the extra subject (XML?)
