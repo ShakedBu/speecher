@@ -89,6 +89,7 @@ def get_speech(speech_id):
 
 def search_speech(query):
     results = {}
+    results_list = []
     sentences = execute_query(SEARCH_SPEECH.format(query, query, query, query), True)
 
     for sentence in sentences:
@@ -112,7 +113,6 @@ def search_speech(query):
 
             # Add Sentence to results
             results[speech_id]['text'] = "{}...{}".format(results[speech_id]['text'], full_sentence)
-            results_list = []
 
     # Convert the dictionary to list
     for value in results.values():
