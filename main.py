@@ -75,7 +75,7 @@ class Speech(Resource):
 class Statistics(Resource):
     def get(self):
         if 'speech_id' in request.args:
-            return get_general_counts_by_speech(get_speech(request.args['speech_id']))
+            return get_general_counts_by_speech(request.args['speech_id'])
 
 
 # TODO: Implement the extra subject (XML?)

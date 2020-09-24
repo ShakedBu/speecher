@@ -44,7 +44,7 @@ def get_word_by_location(speech_id, paragraph, sentence, index):
             full_sentence = "{} {}".format(full_sentence, curr_word[0].strip())
 
         return {'speech_id': speech_id, 'paragraph': paragraph, 'sentence': sentence, 'index': index,
-                'word': word[0].strip(), 'full_sentence': full_sentence}
+                'word': word[1].strip(), 'full_sentence': full_sentence}
 
 
 def get_all_words_in_speech(speech_id):
