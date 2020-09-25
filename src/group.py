@@ -36,7 +36,7 @@ def get_group(group_id):
     words = execute_query(GET_GROUP.format(group_id), True)
 
     for word in words:
-        results.append({'id': word[0], 'name': word[1]})
+        results.append({'id': word[0], 'word': word[1].strip()})
 
     return results
 
