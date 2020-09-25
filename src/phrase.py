@@ -1,5 +1,5 @@
 from src.DBUtils import execute_query
-from src.queries import LAST_PHRASE_INDEX, NEW_PHRASE_PART, GET_WORD, SEARCH_PHRASE
+from src.queries import LAST_PHRASE_INDEX, NEW_PHRASE_PART, SEARCH_PHRASE, GET_ALL_PHRASES
 
 
 def create_new_phrase(words):
@@ -14,3 +14,21 @@ def create_new_phrase(words):
 
 def get_phrases(speech_id, query):
     return execute_query(SEARCH_PHRASE.format(query))
+
+
+def get_all_phrases():
+    results = []
+    phrases = {}
+    phrases_words = execute_query(GET_ALL_PHRASES, True)
+
+    for phrase_word in phrases_words:
+        phrase_id = phrase_word[0]
+        if phrase_id not in phrases:
+            phrases[phrase_id] = {'id': phrase_id, 'text': ""}
+
+        phrases[phrase_id].text = "{} {}".format(phrases[phrase_id].text, phrase_word[2])
+
+    for phrase in phrases:
+        results.append({'id': phrase.id, 'phrase': phrase.text})
+
+    return results

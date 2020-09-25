@@ -87,6 +87,11 @@ join public."Word" as b on a.word_id = b.word_id
 where word like '%{}%')
 order by index;'''
 
+GET_ALL_PHRASES = '''SELECT phrase_id, index, a.word_id, word
+FROM public."Word_Phrase" as a
+inner join public."Word" as b on a.word_id = b.word_id
+order by phrase_id, index;'''
+
 # Groups
 NEW_GROUP = '''INSERT INTO public."Group"(
 group_id, group_name)
