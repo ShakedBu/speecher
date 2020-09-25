@@ -1,6 +1,23 @@
+from flask_restful import Resource
+from flask import request
+
 from src.DBUtils import execute_query
-from .queries import GET_ALL_WORDS, GET_WORD_BY_LOC, GET_SENTENCE, GET_WORD_APPEARANCES_IN_SPEECH,\
+from src.queries import GET_ALL_WORDS, GET_WORD_BY_LOC, GET_SENTENCE, GET_WORD_APPEARANCES_IN_SPEECH,\
     GET_PARTIAL_SENTENCE, GET_SPEECH_WORDS
+
+
+class Word(Resource):
+    def get(self):
+        if 'speech_id' in request.args:
+            if 'paragraph' in request.args:
+                return get_word_by_location(request.args['speech_id'], request.args['paragraph'],
+                                            request.args['sentence'], request.args['index'])
+            elif 'word' in request.args:
+                return get_word_appearances_in_speech(request.args['speech_id'], request.args['word'])
+
+            return get_all_words_in_speech(request.args['speech_id'])
+
+        return get_all_words()
 
 
 def get_all_words():

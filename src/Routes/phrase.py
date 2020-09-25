@@ -1,6 +1,24 @@
+from flask_restful import Resource
+from flask import request
+
 from src.DBUtils import execute_query
 from src.queries import LAST_PHRASE_INDEX, NEW_PHRASE_PART, GET_ALL_PHRASES, GET_PHRASE, GET_PARTIAL_SENTENCE, \
     SEARCH_PHRASE_FIRST, SEARCH_PHRASE_MIDDLE, SEARCH_PHRASE_LAST
+
+
+class Phrase(Resource):
+    def get(self):
+        if 'phrase_id' in request.args:
+            if 'speech_id' in request.args:
+                return get_phrases(request.args['speech_id'], request.args['phrase_id'])
+
+            return get_phrase(request.args['phrase_id'])
+
+        return get_all_phrases()
+
+    def post(self):
+        data = request.get_json()
+        create_new_phrase(data['words'])
 
 
 def create_new_phrase(words):

@@ -1,6 +1,29 @@
+from flask_restful import Resource
+from flask import request
+
 from src.DBUtils import execute_query
-from .queries import NEW_GROUP, GET_WORD, ADD_WORD_TO_GROUP, SEARCH_GROUP, GET_GROUP, DELETE_WORD_FROM_GROUP, \
+from src.queries import NEW_GROUP, GET_WORD, ADD_WORD_TO_GROUP, SEARCH_GROUP, GET_GROUP, DELETE_WORD_FROM_GROUP, \
     ADD_WORD_TO_GROUP, GET_ALL_GROUPS
+
+
+class Group(Resource):
+    def get(self):
+        if 'id' in request.args:
+            return get_group(request.args['id'])
+
+        elif 'query' in request.args:
+            return search_groups(request.args['query'])
+
+    def post(self):
+        data = request.get_json()
+        create_new_group(data['name'], data['words'])
+
+    def put(self):
+        data = request.get_json()
+        if data['action'] == 'remove':
+            remove_words_from_group(data['id'], data['words'])
+        else:
+            add_words_to_group(data['id'], data['words'])
 
 
 def create_new_group(name, words):

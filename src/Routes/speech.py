@@ -1,8 +1,23 @@
 import re
+from flask_restful import Resource
+from flask import request, jsonify
 
 from src.DBUtils import execute_query
 from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, \
     GET_WORD, SEARCH_SPEECH, GET_SPEECH, ADD_WORD_TO_SPEECH_VAL, GET_SENTENCE, GET_SPEECH_DETAILS
+
+
+class Speech(Resource):
+    def get(self):
+        if 'id' in request.args:
+            return jsonify(get_speech(request.args['id']))
+
+        elif 'query' in request.args:
+            return search_speech(request.args['query'])
+
+    def post(self):
+        data = request.get_json()
+        create_new_speech(data['name'], data['speaker'], data['date'], data['location'], data['file_path'])
 
 
 def create_new_speech(name, speaker, date, location, file_path):
