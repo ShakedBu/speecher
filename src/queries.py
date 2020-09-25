@@ -67,7 +67,8 @@ order by paragraph, sentence, index_in_sentence;'''
 
 GET_PARTIAL_SENTENCE = '''SELECT actual_word
 from public."Word_in_Speech"
-where speech_id = '{}' and paragraph = '{}' and sentence = '{}' and index_in_sentence - '{}' BETWEEN -2 and 2
+where speech_id = '{}' and paragraph = '{}' and sentence = '{}' and index_in_sentence - '{}' 
+BETWEEN -{range} and {range}
 order by paragraph, sentence, index_in_sentence;'''
 
 # Phrases

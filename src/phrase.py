@@ -1,5 +1,5 @@
 from src.DBUtils import execute_query
-from src.queries import LAST_PHRASE_INDEX, NEW_PHRASE_PART, GET_ALL_PHRASES, GET_PHRASE, GET_SENTENCE, \
+from src.queries import LAST_PHRASE_INDEX, NEW_PHRASE_PART, GET_ALL_PHRASES, GET_PHRASE, GET_PARTIAL_SENTENCE, \
     SEARCH_PHRASE_FIRST, SEARCH_PHRASE_MIDDLE, SEARCH_PHRASE_LAST
 
 
@@ -37,15 +37,17 @@ def get_phrases(speech_id, phrase_id):
     phrase_appearances = execute_query(query, True)
 
     for appearance in phrase_appearances:
-        words_in_sentence = execute_query(GET_SENTENCE.format(speech_id, appearance[0], appearance[1]), True)
-        full_sentence = ""
+        words_in_sentence = execute_query(GET_PARTIAL_SENTENCE.format(speech_id, appearance[0], appearance[1],
+                                                                      appearance[2], range=len(words)),
+                                          True)
+        some_sentence = ""
 
         # Build the sentence
         for curr_word in words_in_sentence:
-            full_sentence = "{} {}".format(full_sentence, curr_word[0].strip())
+            some_sentence = "{} {}".format(some_sentence, curr_word[0].strip())
 
         results.append({'paragraph': appearance[0], 'sentence': appearance[1], 'index': appearance[2],
-                        'full_sentence': full_sentence})
+                        'some_sentence': '...' + some_sentence + '...'})
 
     return results
 

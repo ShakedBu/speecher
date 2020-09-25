@@ -19,7 +19,8 @@ def get_word_appearances_in_speech(speech_id, word):
 
     # Go over the appearances and builds the results with full details
     for appearance in word_appearances:
-        close_words = execute_query(GET_PARTIAL_SENTENCE.format(speech_id, appearance[0], appearance[1], appearance[2]),
+        close_words = execute_query(GET_PARTIAL_SENTENCE.format(speech_id, appearance[0], appearance[1], appearance[2],
+                                                                range=2),
                                     True)
         some_sentence = "..."
 
