@@ -19,5 +19,6 @@ def create_app():
     api.add_resource(Group, '/group')
     api.add_resource(Speech, '/speech')
     api.add_resource(Statistics, '/statistics')
+    # TODO: Extra subject
 
     return app

@@ -12,7 +12,6 @@ class Statistics(Resource):
             return get_general_counts_by_speech(request.args['speech_id'])
 
 
-
 def get_general_counts_by_speech(speech_id):
     results = []
     counts = execute_query(GET_ALL_COUNTS.format(speech_id), True)
