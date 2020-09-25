@@ -1,5 +1,5 @@
 from src.DBUtils import execute_query
-from src.queries import LAST_PHRASE_INDEX, NEW_PHRASE_PART, GET_ALL_PHRASES, GET_PHRASE, \
+from src.queries import LAST_PHRASE_INDEX, NEW_PHRASE_PART, GET_ALL_PHRASES, GET_PHRASE, GET_SENTENCE, \
     SEARCH_PHRASE_FIRST, SEARCH_PHRASE_MIDDLE, SEARCH_PHRASE_LAST
 
 
@@ -14,6 +14,7 @@ def create_new_phrase(words):
 
 
 def get_phrases(speech_id, phrase_id):
+    results = []
     words = get_phrase(phrase_id)
     query = ""
 
@@ -33,9 +34,20 @@ def get_phrases(speech_id, phrase_id):
                                                     previous_index=previous_index)
             query = query.format(mid_query)
 
-    # TODO: Need now to return all the occurrences indeed
+    phrase_appearances = execute_query(query, True)
 
-    return query
+    for appearance in phrase_appearances:
+        words_in_sentence = execute_query(GET_SENTENCE.format(speech_id, appearance[0], appearance[1]), True)
+        full_sentence = ""
+
+        # Build the sentence
+        for curr_word in words_in_sentence:
+            full_sentence = "{} {}".format(full_sentence, curr_word[0].strip())
+
+        results.append({'paragraph': appearance[0], 'sentence': appearance[1], 'index': appearance[2],
+                        'full_sentence': full_sentence})
+
+    return results
 
 
 def get_all_phrases():
