@@ -3,7 +3,7 @@ from flask_restful import reqparse, abort, Api, Resource
 from flask_cors import CORS
 
 from src.group import create_new_group, get_group, search_groups, add_words_to_group, remove_words_from_group
-from src.phrase import create_new_phrase, get_phrases, get_all_phrases
+from src.phrase import create_new_phrase, get_phrases, get_all_phrases, get_phrase
 from src.speech import create_new_speech, get_speech, search_speech
 from src.word import get_all_words, get_word_by_location, get_word_appearances_in_speech, get_all_words_in_speech
 from src.statistics import get_general_counts_by_speech
@@ -31,8 +31,10 @@ class Word(Resource):
 
 class Phrase(Resource):
     def get(self):
-        if 'speech_id' and 'query' in request.args:
-            return get_phrases(request.args['speech_id'], request.args['query'])
+        if 'phrase_id' in request.args:
+            if 'speech_id' in request.args:
+                return get_phrases(request.args['speech_id'], request.args['phrase_id'])
+            return get_phrase(request.args['phrase_id'])
         return get_all_phrases()
 
     def post(self):

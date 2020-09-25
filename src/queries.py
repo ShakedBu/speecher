@@ -77,20 +77,32 @@ VALUES ('{}', '{}', '{}');'''
 
 LAST_PHRASE_INDEX = '''SELECT MAX(phrase_id)+1 FROM public."Word_Phrase"'''
 
-# TODO: enable search by multiple words
-SEARCH_PHRASE = '''SELECT index, word
-FROM public."Word_Phrase" as a
-join public."Word" as b on a.word_id = b.word_id
-where phrase_id = (SELECT phrase_id
-FROM public."Word_Phrase" as a
-join public."Word" as b on a.word_id = b.word_id
-where word like '%{}%')
-order by index;'''
+SEARCH_PHRASE_FIRST = '''select paragraph, sentence, index_in_sentence
+from public."Word_in_Speech" as a{index}
+where speech_id = '{}' and a{index}.word_id = '{}' and exists ({})
+order by paragraph, sentence, index_in_sentence;'''
+
+SEARCH_PHRASE_MIDDLE = '''select paragraph, sentence, index_in_sentence
+from public."Word_in_Speech" as a{index}
+where speech_id = '{}' and a{index}.word_id = '{}' and 
+a{previous_index}.paragraph = a{index}.paragraph and a{previous_index}.sentence = a{index}.sentence and 
+a{previous_index}.index_in_sentence = a{index}.index_in_sentence-1 and exists ({})'''
+
+SEARCH_PHRASE_LAST = '''select paragraph, sentence, index_in_sentence
+from public."Word_in_Speech" as a{index}
+where speech_id = '{}' and a{index}.word_id = '{}' and 
+a{previous_index}.paragraph = a{index}.paragraph and a{previous_index}.sentence = a{index}.sentence and 
+a{previous_index}.index_in_sentence = a{index}.index_in_sentence-1'''
 
 GET_ALL_PHRASES = '''SELECT phrase_id, index, a.word_id, word
 FROM public."Word_Phrase" as a
 inner join public."Word" as b on a.word_id = b.word_id
 order by phrase_id, index;'''
+
+GET_PHRASE = '''select index, word_id
+from public."Word_Phrase"
+where phrase_id = '{}'
+order by index;'''
 
 # Groups
 NEW_GROUP = '''INSERT INTO public."Group"(
