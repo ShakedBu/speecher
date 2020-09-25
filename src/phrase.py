@@ -26,9 +26,9 @@ def get_all_phrases():
         if phrase_id not in phrases:
             phrases[phrase_id] = {'id': phrase_id, 'text': ""}
 
-        phrases[phrase_id].text = "{} {}".format(phrases[phrase_id].text, phrase_word[2])
+        phrases[phrase_id]['text'] = "{} {}".format(phrases[phrase_id]['text'], phrase_word[3].strip())
 
-    for phrase in phrases:
-        results.append({'id': phrase.id, 'phrase': phrase.text})
+    for phrase in phrases.values():
+        results.append(phrase)
 
     return results
