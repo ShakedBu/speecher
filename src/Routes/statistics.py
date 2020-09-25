@@ -5,11 +5,12 @@ from src.DBUtils import execute_query
 from src.queries import GET_ALL_COUNTS
 
 
-# TODO: Return statistics about number of words or characters in sentences etc...
 class Statistics(Resource):
     def get(self):
         if 'speech_id' in request.args:
             return get_general_counts_by_speech(request.args['speech_id'])
+        if 'count' in request.args:
+            return 0
 
 
 def get_general_counts_by_speech(speech_id):
@@ -29,3 +30,15 @@ def get_general_counts_by_speech(speech_id):
     results.append({'paragraph': paragraph_index, 'sentences': paragraph_sentences})
 
     return results
+
+
+def count_words(speech_id, paragraph, sentence):
+    return 0
+
+
+def count_chars(speech_id, paragraph, sentence, word):
+    return 0
+
+
+def count_words_appearances(speech_id):
+    return 0
