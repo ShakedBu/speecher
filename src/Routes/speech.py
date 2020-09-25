@@ -68,6 +68,7 @@ def create_new_speech(name, speaker, date, location, file_path):
                                 word = execute_query(NEW_WORD.format(only_word, len(only_word)), True, True)
                                 word_id = word[0]
 
+                            # TODO: Handle actual words with ' in them
                             sentence_insert += ADD_WORD_TO_SPEECH_VAL.format(word_id, speech_id,
                                                                              paragraph_index, sentence_index,
                                                                              word_index, actual_word)

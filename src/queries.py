@@ -10,8 +10,12 @@ VALUES {} '''
 
 ADD_WORD_TO_SPEECH_VAL = ''' ('{}', '{}', '{}', '{}', '{}', '{}'),'''
 
+# Bad Example
 GET_SPEECH = '''SELECT paragraph, sentence, index_in_sentence, actual_word FROM public."Word_in_Speech"
 WHERE speech_id = '{}' ORDER BY paragraph, sentence, index_in_sentence;'''
+# Good example
+# GET_SPEECH = '''SELECT paragraph, sentence, index_in_sentence, actual_word FROM public."Word_in_Speech"
+# WHERE speech_id = %s ORDER BY paragraph, sentence, index_in_sentence;'''
 
 GET_SPEECH_DETAILS = '''SELECT speech_name, speaker, location, date
 FROM public."Speech"
