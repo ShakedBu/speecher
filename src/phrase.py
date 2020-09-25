@@ -33,6 +33,8 @@ def get_phrases(speech_id, phrase_id):
                                                     previous_index=previous_index)
             query = query.format(mid_query)
 
+    # TODO: Need now to return all the occurrences indeed
+
     return query
 
 
