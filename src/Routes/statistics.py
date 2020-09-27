@@ -10,7 +10,7 @@ class Statistics(Resource):
     def get(self):
         if 'speech_id' in request.args:
             if 'count' in request.args:
-                if request.args['count'] == 'char':
+                if request.args['count'] == 'chars':
                     return count_chars(request.args['speech_id'], request.args.get('paragraph'),
                                        request.args.get('sentence'), request.args.get('word'))
                 return count_words(request.args['speech_id'], request.args.get('paragraph'),

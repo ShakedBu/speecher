@@ -44,6 +44,9 @@ JOIN public."Word" as b on a.word_id = b.word_id
 WHERE speech_id = '{}'
 order by word;'''
 
+GET_ALL_SPEECHES = '''select speech_id, speech_name
+from public."Speech"'''
+
 # Words
 NEW_WORD = '''INSERT INTO public."Word"(
 word_id, word, length)

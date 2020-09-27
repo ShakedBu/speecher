@@ -3,7 +3,7 @@ from flask_restful import Resource
 from flask import request, jsonify
 
 from src.DBUtils import execute_query
-from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, \
+from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, GET_ALL_SPEECHES, \
     GET_WORD, SEARCH_SPEECH, GET_SPEECH, ADD_WORD_TO_SPEECH_VAL, GET_SENTENCE, GET_SPEECH_DETAILS
 
 
@@ -14,6 +14,8 @@ class Speech(Resource):
 
         elif 'query' in request.args:
             return search_speech(request.args['query'])
+
+        return get_all_speeches()
 
     def post(self):
         data = request.get_json()
@@ -135,3 +137,13 @@ def search_speech(query):
         results_list.append(value)
 
     return results_list
+
+
+def get_all_speeches():
+    results = []
+    speeches = execute_query(GET_ALL_SPEECHES, True)
+
+    for speech in speeches:
+        results.append({'id': speech[0], 'name': speech[1]})
+
+    return results
