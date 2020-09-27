@@ -176,3 +176,16 @@ Where speech_id = '{}' and paragraph = '{}';'''
 COUNT_WORDS_IN_SPEECH = '''select count(*)
 from public."Word_in_Speech"
 Where speech_id = '{}';'''
+
+WORD_APPEARANCES = '''select a.word_id, word, count(*) as amount
+from public."Word" as a
+inner join public."Word_in_Speech" as b on a.word_id = b.word_id
+group by a.word_id, word
+order by amount desc'''
+
+WORD_APPEARANCES_IN_SPEECH = '''select a.word_id, word, count(*) as amount
+from public."Word" as a
+inner join public."Word_in_Speech" as b on a.word_id = b.word_id
+where speech_id = '{}'
+group by a.word_id, word
+order by amount desc'''

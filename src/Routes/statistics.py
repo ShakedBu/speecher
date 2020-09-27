@@ -3,18 +3,22 @@ from flask import request
 
 from src.DBUtils import execute_query
 from src.queries import GET_ALL_COUNTS, COUNT_CHARS_IN_WORD, COUNT_CHARS_IN_SENTENCE, COUNT_CHARS_IN_PARAGRAPH, \
-    COUNT_CHARS_IN_SPEECH, COUNT_WORDS_IN_SENTENCE, COUNT_WORDS_IN_PARAGRAPH, COUNT_WORDS_IN_SPEECH
+    COUNT_CHARS_IN_SPEECH, COUNT_WORDS_IN_SENTENCE, COUNT_WORDS_IN_PARAGRAPH, COUNT_WORDS_IN_SPEECH, \
+    WORD_APPEARANCES, WORD_APPEARANCES_IN_SPEECH
 
 
 class Statistics(Resource):
     def get(self):
-        if 'speech_id' in request.args:
-            if 'count' in request.args:
-                if request.args['count'] == 'chars':
-                    return count_chars(request.args['speech_id'], request.args.get('paragraph'),
-                                       request.args.get('sentence'), request.args.get('word'))
-                return count_words(request.args['speech_id'], request.args.get('paragraph'),
+        if 'count' in request.args:
+            if request.args['count'] == 'chars':
+                return count_chars(request.args.get('speech_id'), request.args.get('paragraph'),
+                                   request.args.get('sentence'), request.args.get('word'))
+            if request.args['count'] == 'words':
+                return count_words(request.args.get('speech_id'), request.args.get('paragraph'),
                                    request.args.get('sentence'))
+            if request.args['count'] == 'appearances':
+                return count_words_appearances(request.args.get('speech_id'))
+
         return get_general_counts_by_speech(request.args['speech_id'])
 
 
@@ -65,4 +69,14 @@ def count_chars(speech_id, paragraph, sentence, word):
 
 
 def count_words_appearances(speech_id):
-    return 0
+    results = []
+
+    if speech_id is not None:
+        appearances = execute_query(WORD_APPEARANCES_IN_SPEECH.format(speech_id), True)
+    else:
+        appearances = execute_query(WORD_APPEARANCES, True)
+
+    for word in appearances:
+        results.append({'id': word[0], 'word': word[1].strip(), 'appearances': word[2]})
+
+    return results
