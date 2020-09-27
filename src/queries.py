@@ -142,11 +142,34 @@ where speech_id='{}'
 group by paragraph, sentence
 order by paragraph, sentence;'''
 
-COUNT_CHARS = '''select sum(length)
+COUNT_CHARS_IN_WORD = '''select sum(length)
+from public."Word_in_Speech" as a
+inner join public."Word" as b on a.word_id = b.word_id
+Where speech_id = '{}' and paragraph = '{}' and sentence = '{}' and index_in_sentence = '{}';'''
+
+COUNT_CHARS_IN_SENTENCE = '''select sum(length)
 from public."Word_in_Speech" as a
 inner join public."Word" as b on a.word_id = b.word_id
 Where speech_id = '{}' and paragraph = '{}' and sentence = '{}';'''
 
-COUNT_WORDS = '''select count(*)
+COUNT_CHARS_IN_PARAGRAPH = '''select sum(length)
+from public."Word_in_Speech" as a
+inner join public."Word" as b on a.word_id = b.word_id
+Where speech_id = '{}' and paragraph = '{}';'''
+
+COUNT_CHARS_IN_SPEECH = '''select sum(length)
+from public."Word_in_Speech" as a
+inner join public."Word" as b on a.word_id = b.word_id
+Where speech_id = '{}';'''
+
+COUNT_WORDS_IN_SENTENCE = '''select count(*)
 from public."Word_in_Speech"
 Where speech_id = '{}' and paragraph = '{}' and sentence = '{}';'''
+
+COUNT_WORDS_IN_PARAGRAPH = '''select count(*)
+from public."Word_in_Speech"
+Where speech_id = '{}' and paragraph = '{}';'''
+
+COUNT_WORDS_IN_SPEECH = '''select count(*)
+from public."Word_in_Speech"
+Where speech_id = '{}';'''

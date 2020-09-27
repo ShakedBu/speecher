@@ -8,9 +8,13 @@ from src.queries import GET_ALL_COUNTS
 class Statistics(Resource):
     def get(self):
         if 'speech_id' in request.args:
-            return get_general_counts_by_speech(request.args['speech_id'])
-        if 'count' in request.args:
-            return 0
+            if 'count' in request.args:
+                if request.args['count'] == 'char':
+                    return count_chars(request.args['speech_id'], request.args.get('paragraph'),
+                                       request.args.get('sentence'), request.args.get('word'))
+                return count_words(request.args['speech_id'], request.args.get('paragraph'),
+                                   request.args.get('sentence'))
+        return get_general_counts_by_speech(request.args['speech_id'])
 
 
 def get_general_counts_by_speech(speech_id):
