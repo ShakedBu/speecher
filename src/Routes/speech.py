@@ -24,7 +24,7 @@ class Speech(Resource):
 
 def create_new_speech(name, speaker, date, location, file_path):
     if name or speaker or date or location or file_path is None:
-        return 'Must get all of the fields of the speech'
+        return 'Must get all of the fields of the speech', 400
 
     # Insert to Speech table
     speech = execute_query_safe(NEW_SPEECH, {'speech_name': name, 'speaker': speaker, 'date': date,
@@ -92,7 +92,7 @@ def create_new_speech(name, speaker, date, location, file_path):
 
 def get_speech(speech_id):
     if speech_id is None:
-        return 'No Speech Id given'
+        return 'No Speech Id given', 400
 
     speech_details = execute_query_safe(GET_SPEECH_DETAILS, {'speech_id': speech_id}, True, True)
     words = execute_query_safe(GET_SPEECH, {'speech_id': speech_id}, True)
@@ -118,7 +118,7 @@ def get_speech(speech_id):
 
 def search_speech(query):
     if query is None:
-        return 'No query to search'
+        return 'No query to search', 400
 
     results = {}
     results_list = []

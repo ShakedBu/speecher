@@ -23,7 +23,7 @@ class Phrase(Resource):
 
 def create_new_phrase(words):
     if words is None or len(words) == 0:
-        return 'Phrase must contain words'
+        return 'Phrase must contain words', 400
 
     phrase_id = execute_query_safe(LAST_PHRASE_INDEX, is_fetch=True, is_single_row=True)[0]
     word_index = 1
@@ -36,7 +36,7 @@ def create_new_phrase(words):
 
 def get_phrases(speech_id, phrase_id):
     if speech_id or phrase_id is None:
-        return 'Must get speech id and phrase id'
+        return 'Must get speech id and phrase id', 400
 
     results = []
     words = get_phrase(phrase_id)
@@ -98,7 +98,7 @@ def get_all_phrases():
 
 def get_phrase(phrase_id):
     if phrase_id is None:
-        return 'No Phrase Id given'
+        return 'No Phrase Id given', 400
     results = []
     phrase_words = execute_query_safe(GET_PHRASE, {'phrase_id': phrase_id}, True)
 
