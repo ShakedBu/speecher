@@ -2,7 +2,7 @@ import re
 from flask_restful import Resource
 from flask import request, jsonify
 
-from src.DBUtils import execute_query, execute_query_safe
+from src.DBUtils import execute_query_safe, execute_insert_many_safe
 from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, GET_ALL_SPEECHES, \
     GET_WORD, SEARCH_SPEECH, GET_SPEECH, ADD_WORD_TO_SPEECH_VAL, GET_SENTENCE, GET_SPEECH_DETAILS
 
@@ -53,6 +53,7 @@ def create_new_speech(name, speaker, date, location, file_path):
                     words = curr_sentence.split()
                     word_index = 1
                     sentence_insert = ""
+                    words_to_insert = []
 
                     # Go over the words
                     for curr_word in words:
@@ -68,17 +69,20 @@ def create_new_speech(name, speaker, date, location, file_path):
                             if word is not None:
                                 word_id = word[0]
                             else:
-                                word = execute_query(NEW_WORD.format(only_word, len(only_word)), True, True)
+                                word = execute_query_safe(NEW_WORD, {'word': only_word, 'length': len(only_word)},
+                                                          True, True)
                                 word_id = word[0]
 
-                            # TODO: Handle actual words with ' in them
-                            sentence_insert += ADD_WORD_TO_SPEECH_VAL.format(word_id, speech_id,
-                                                                             paragraph_index, sentence_index,
-                                                                             word_index, actual_word)
+                            # sentence_insert += ADD_WORD_TO_SPEECH_VAL.format(word_id, speech_id,
+                            #                                                  paragraph_index, sentence_index,
+                            #                                                  word_index, actual_word)
+                            words_to_insert.append((word_id, speech_id, paragraph_index, sentence_index, word_index,
+                                                    actual_word))
                             word_index += 1
 
                     # Add the whole sentence to the DB
-                    execute_query(ADD_WORD_TO_SPEECH.format(sentence_insert.rstrip(',')))
+                    # execute_query(ADD_WORD_TO_SPEECH.format(sentence_insert.rstrip(',')))
+                    execute_insert_many_safe(ADD_WORD_TO_SPEECH, words_to_insert, ADD_WORD_TO_SPEECH_VAL)
                     sentence_index += 1
             paragraph_index += 1
 

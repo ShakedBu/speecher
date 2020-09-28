@@ -1,15 +1,15 @@
 # Speeches
 NEW_SPEECH = '''INSERT INTO public."Speech"(
 speech_id, speech_name, speaker, date, location, file_path)
-VALUES ((SELECT max(speech_id)+1 from public."Speech"), %(speech_name)s, '%(speaker)s, %(date)s, %(location)s, 
+VALUES ((SELECT max(speech_id)+1 from public."Speech"), %(speech_name)s, %(speaker)s, %(date)s, %(location)s, 
 %(file_path)s)
 returning speech_id;'''
 
 ADD_WORD_TO_SPEECH = '''INSERT INTO public."Word_in_Speech"(
 word_id, speech_id, paragraph, sentence, index_in_sentence, actual_word)
-VALUES {} '''
+VALUES %s'''
 
-ADD_WORD_TO_SPEECH_VAL = ''' ('{}', '{}', '{}', '{}', '{}', '{}'),'''
+ADD_WORD_TO_SPEECH_VAL = '''(%s, %s, %s, %s, %s, %s)'''
 
 # Bad Example
 # GET_SPEECH = '''SELECT paragraph, sentence, index_in_sentence, actual_word FROM public."Word_in_Speech"
@@ -51,7 +51,7 @@ from public."Speech"'''
 # Words
 NEW_WORD = '''INSERT INTO public."Word"(
 word_id, word, length)
-VALUES ((SELECT max(word_id)+1 from public."Word"), '{}', '{}')
+VALUES ((SELECT max(word_id)+1 from public."Word"), %(word)s, %(length)s)
 on conflict (word) do nothing
 returning word_id;'''
 
@@ -89,18 +89,18 @@ LAST_PHRASE_INDEX = '''SELECT MAX(phrase_id)+1 FROM public."Word_Phrase"'''
 
 SEARCH_PHRASE_FIRST = '''select paragraph, sentence, index_in_sentence
 from public."Word_in_Speech" as a{index}
-where speech_id = '{}' and a{index}.word_id = '{}' and exists ({})
+where speech_id = %(speech_id)s and a{index}.word_id = '{}' and exists ({})
 order by paragraph, sentence, index_in_sentence;'''
 
 SEARCH_PHRASE_MIDDLE = '''select paragraph, sentence, index_in_sentence
 from public."Word_in_Speech" as a{index}
-where speech_id = '{}' and a{index}.word_id = '{}' and 
+where speech_id = %(speech_id)s and a{index}.word_id = '{}' and 
 a{previous_index}.paragraph = a{index}.paragraph and a{previous_index}.sentence = a{index}.sentence and 
 a{previous_index}.index_in_sentence = a{index}.index_in_sentence-1 and exists ({})'''
 
 SEARCH_PHRASE_LAST = '''select paragraph, sentence, index_in_sentence
 from public."Word_in_Speech" as a{index}
-where speech_id = '{}' and a{index}.word_id = '{}' and 
+where speech_id = %(speech_id)s and a{index}.word_id = '{}' and 
 a{previous_index}.paragraph = a{index}.paragraph and a{previous_index}.sentence = a{index}.sentence and 
 a{previous_index}.index_in_sentence = a{index}.index_in_sentence-1'''
 

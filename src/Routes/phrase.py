@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask import request
 
-from src.DBUtils import execute_query, execute_query_safe
+from src.DBUtils import execute_query_safe
 from src.queries import LAST_PHRASE_INDEX, NEW_PHRASE_PART, GET_ALL_PHRASES, GET_PHRASE, GET_PARTIAL_SENTENCE, \
     SEARCH_PHRASE_FIRST, SEARCH_PHRASE_MIDDLE, SEARCH_PHRASE_LAST
 
@@ -38,26 +38,28 @@ def get_phrases(speech_id, phrase_id):
 
     # Build this massive query to find all the occurrences of the phrase in the speech :)
     for word in words:
-        index = word['index']
+        index = int(word['index'])
         previous_index = int(index) - 1
         word_id = word['word']
 
         if index == 1:
-            query = SEARCH_PHRASE_FIRST.format(speech_id, word_id, '{}', index=index)
+            query = SEARCH_PHRASE_FIRST.format(word_id, '{}', index=index)
         elif index == len(words):
-            last_query = SEARCH_PHRASE_LAST.format(speech_id, word_id, index=index, previous_index=previous_index)
+            last_query = SEARCH_PHRASE_LAST.format(word_id, index=index, previous_index=previous_index)
             query = query.format(last_query)
         else:
-            mid_query = SEARCH_PHRASE_MIDDLE.format(speech_id, word_id, '{}', index=index,
+            mid_query = SEARCH_PHRASE_MIDDLE.format(word_id, '{}', index=index,
                                                     previous_index=previous_index)
             query = query.format(mid_query)
 
-    phrase_appearances = execute_query(query, True)
+    phrase_appearances = execute_query_safe(query, {'speech_id': speech_id}, is_fetch=True)
 
     for appearance in phrase_appearances:
-        words_in_sentence = execute_query(GET_PARTIAL_SENTENCE.format(speech_id, appearance[0], appearance[1],
-                                                                      appearance[2], range=len(words)),
-                                          True)
+        words_in_sentence = execute_query_safe(GET_PARTIAL_SENTENCE, {'speech_id': speech_id,
+                                                                      'paragraph': appearance[0],
+                                                                      'sentence': appearance[1],
+                                                                      'index': appearance[2], 'range': len(words)},
+                                               True)
         some_sentence = ""
 
         # Build the sentence
