@@ -24,7 +24,7 @@ def execute_query_safe(query, args={}, is_fetch=False, is_single_row=False):
                 records = cursor.fetchall()
 
     except (Exception, psycopg2.Error) as error:
-        print("Error while fetching data from PostgreSQL", error)
+        print("Error from PostgreSQL", error)
 
     finally:
         # Close database connection.
