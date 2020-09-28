@@ -145,7 +145,7 @@ def search_speech(query):
 
 def get_all_speeches():
     results = []
-    speeches = execute_query_safe(GET_ALL_SPEECHES, True)
+    speeches = execute_query_safe(GET_ALL_SPEECHES, is_fetch=True)
 
     for speech in speeches:
         results.append({'id': speech[0], 'name': speech[1]})

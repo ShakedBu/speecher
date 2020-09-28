@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask import request
 
-from src.DBUtils import execute_query
+from src.DBUtils import execute_query_safe
 from src.queries import GET_ALL_COUNTS, COUNT_CHARS_IN_WORD, COUNT_CHARS_IN_SENTENCE, COUNT_CHARS_IN_PARAGRAPH, \
     COUNT_CHARS_IN_SPEECH, COUNT_WORDS_IN_SENTENCE, COUNT_WORDS_IN_PARAGRAPH, COUNT_WORDS_IN_SPEECH, \
     WORD_APPEARANCES, WORD_APPEARANCES_IN_SPEECH
@@ -24,7 +24,7 @@ class Statistics(Resource):
 
 def get_general_counts_by_speech(speech_id):
     results = []
-    counts = execute_query(GET_ALL_COUNTS.format(speech_id), True)
+    counts = execute_query_safe(GET_ALL_COUNTS, {'speech_id': speech_id}, True)
     paragraph_index = 1
     paragraph_sentences = []
 
@@ -44,11 +44,13 @@ def get_general_counts_by_speech(speech_id):
 def count_words(speech_id, paragraph, sentence):
     if paragraph is not None:
         if sentence is not None:
-            words = execute_query(COUNT_WORDS_IN_SENTENCE.format(speech_id, paragraph, sentence), True, True)
+            words = execute_query_safe(COUNT_WORDS_IN_SENTENCE, {'speech_id': speech_id, 'paragraph': paragraph,
+                                                                 'sentence': sentence}, True, True)
         else:
-            words = execute_query(COUNT_WORDS_IN_PARAGRAPH.format(speech_id, paragraph), True, True)
+            words = execute_query_safe(COUNT_WORDS_IN_PARAGRAPH, {'speech_id': speech_id, 'paragraph': paragraph},
+                                       True, True)
     else:
-        words = execute_query(COUNT_WORDS_IN_SPEECH.format(speech_id), True, True)
+        words = execute_query_safe(COUNT_WORDS_IN_SPEECH, {'speech_id': speech_id}, True, True)
 
     return words[0]
 
@@ -57,13 +59,16 @@ def count_chars(speech_id, paragraph, sentence, word):
     if paragraph is not None:
         if sentence is not None:
             if word is not None:
-                chars = execute_query(COUNT_CHARS_IN_WORD.format(speech_id, paragraph, sentence, word), True, True)
+                chars = execute_query_safe(COUNT_CHARS_IN_WORD, {'speech_id': speech_id, 'paragraph': paragraph,
+                                                                 'sentence': sentence, 'word': word}, True, True)
             else:
-                chars = execute_query(COUNT_CHARS_IN_SENTENCE.format(speech_id, paragraph, sentence), True)
+                chars = execute_query_safe(COUNT_CHARS_IN_SENTENCE, {'speech_id': speech_id, 'paragraph': paragraph,
+                                                                     'sentence': sentence}, True, True)
         else:
-            chars = execute_query(COUNT_CHARS_IN_PARAGRAPH.format(speech_id, paragraph), True)
+            chars = execute_query_safe(COUNT_CHARS_IN_PARAGRAPH, {'speech_id': speech_id, 'paragraph': paragraph}, True,
+                                       True)
     else:
-        chars = execute_query(COUNT_CHARS_IN_SPEECH.format(speech_id), True)
+        chars = execute_query_safe(COUNT_CHARS_IN_SPEECH, {'speech_id': speech_id}, True, True)
 
     return chars[0]
 
@@ -72,9 +77,9 @@ def count_words_appearances(speech_id):
     results = []
 
     if speech_id is not None:
-        appearances = execute_query(WORD_APPEARANCES_IN_SPEECH.format(speech_id), True)
+        appearances = execute_query_safe(WORD_APPEARANCES_IN_SPEECH, {'speech_id': speech_id}, True)
     else:
-        appearances = execute_query(WORD_APPEARANCES, True)
+        appearances = execute_query_safe(WORD_APPEARANCES, is_fetch=True)
 
     for word in appearances:
         results.append({'id': word[0], 'word': word[1].strip(), 'appearances': word[2]})

@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask import request
 
-from src.DBUtils import execute_query, execute_query_safe
+from src.DBUtils import execute_query_safe
 from src.queries import NEW_GROUP, GET_WORD, ADD_WORD_TO_GROUP, SEARCH_GROUP, GET_GROUP, DELETE_WORD_FROM_GROUP, \
     GET_ALL_GROUPS
 

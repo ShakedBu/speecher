@@ -1,7 +1,8 @@
 from flask_restful import Resource
 from flask import request
+from psycopg2 import sql
 
-from src.DBUtils import execute_query
+from src.DBUtils import execute_query_safe
 from src.queries import GET_ALL_WORDS, GET_WORD_BY_LOC, GET_SENTENCE, GET_WORD_APPEARANCES_IN_SPEECH,\
     GET_PARTIAL_SENTENCE, GET_SPEECH_WORDS
 
@@ -22,7 +23,7 @@ class Word(Resource):
 
 def get_all_words():
     results = []
-    words = execute_query(GET_ALL_WORDS, True)
+    words = execute_query_safe(GET_ALL_WORDS, is_fetch=True)
 
     for word in words:
         results.append({'id': word[0], 'word': word[1].strip()})
@@ -32,13 +33,15 @@ def get_all_words():
 
 def get_word_appearances_in_speech(speech_id, word):
     results = []
-    word_appearances = execute_query(GET_WORD_APPEARANCES_IN_SPEECH.format(speech_id, word), True)
+    query = '%' + word + '%'
+    word_appearances = execute_query_safe(GET_WORD_APPEARANCES_IN_SPEECH, {'speech_id': speech_id, 'word': query}, True)
 
     # Go over the appearances and builds the results with full details
     for appearance in word_appearances:
-        close_words = execute_query(GET_PARTIAL_SENTENCE.format(speech_id, appearance[0], appearance[1], appearance[2],
-                                                                range=2),
-                                    True)
+        close_words = execute_query_safe(GET_PARTIAL_SENTENCE, {'speech_id': speech_id, 'paragraph': appearance[0],
+                                                                'sentence': appearance[1], 'index': appearance[2],
+                                                                'range': 2},
+                                         True)
         some_sentence = "..."
 
         for word in close_words:
@@ -51,10 +54,12 @@ def get_word_appearances_in_speech(speech_id, word):
 
 
 def get_word_by_location(speech_id, paragraph, sentence, index):
-    word = execute_query(GET_WORD_BY_LOC.format(speech_id, paragraph, sentence, index), True, True)
+    word = execute_query_safe(GET_WORD_BY_LOC, {'speech_id': speech_id, 'paragraph': paragraph,
+                                                'sentence': sentence, 'index': index}, True, True)
 
     if word is not None:
-        sentence_words = execute_query(GET_SENTENCE.format(speech_id, paragraph, sentence), True)
+        sentence_words = execute_query_safe(GET_SENTENCE, {'speech_id': speech_id, 'paragraph': paragraph,
+                                                           'sentence': sentence}, True)
         full_sentence = ""
 
         # Build the sentence
@@ -67,7 +72,7 @@ def get_word_by_location(speech_id, paragraph, sentence, index):
 
 def get_all_words_in_speech(speech_id):
     results = []
-    words = execute_query(GET_SPEECH_WORDS.format(speech_id), True)
+    words = execute_query_safe(GET_SPEECH_WORDS, {'speech_id': speech_id}, True)
 
     for word in words:
         results.append({'id': word[0], 'word': word[1].strip()})

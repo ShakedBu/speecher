@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask import request
 
-from src.DBUtils import execute_query
+from src.DBUtils import execute_query, execute_query_safe
 from src.queries import LAST_PHRASE_INDEX, NEW_PHRASE_PART, GET_ALL_PHRASES, GET_PHRASE, GET_PARTIAL_SENTENCE, \
     SEARCH_PHRASE_FIRST, SEARCH_PHRASE_MIDDLE, SEARCH_PHRASE_LAST
 
@@ -22,12 +22,12 @@ class Phrase(Resource):
 
 
 def create_new_phrase(words):
-    phrase_id = execute_query(LAST_PHRASE_INDEX, True, True)[0]
+    phrase_id = execute_query_safe(LAST_PHRASE_INDEX, is_fetch=True, is_single_row=True)[0]
     word_index = 1
 
     for curr_word in words:
         # Add word to phrase
-        execute_query(NEW_PHRASE_PART.format(word_index, phrase_id, curr_word))
+        execute_query_safe(NEW_PHRASE_PART, {'index': word_index, 'phrase_id': phrase_id, 'word_id': curr_word})
         word_index += 1
 
 
@@ -73,7 +73,7 @@ def get_phrases(speech_id, phrase_id):
 def get_all_phrases():
     results = []
     phrases = {}
-    phrases_words = execute_query(GET_ALL_PHRASES, True)
+    phrases_words = execute_query_safe(GET_ALL_PHRASES, is_fetch=True)
 
     for phrase_word in phrases_words:
         phrase_id = phrase_word[0]
@@ -90,7 +90,7 @@ def get_all_phrases():
 
 def get_phrase(phrase_id):
     results = []
-    phrase_words = execute_query(GET_PHRASE.format(phrase_id), True)
+    phrase_words = execute_query_safe(GET_PHRASE, {'phrase_id': phrase_id}, True)
 
     for phrase_word in phrase_words:
         results.append({'index': phrase_word[0], 'word': phrase_word[1]})

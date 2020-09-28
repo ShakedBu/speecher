@@ -42,7 +42,7 @@ order by speech_id, paragraph, sentence;'''
 GET_SPEECH_WORDS = '''SELECT distinct a.word_id, word
 FROM public."Word_in_Speech" as a
 JOIN public."Word" as b on a.word_id = b.word_id
-WHERE speech_id = '{}'
+WHERE speech_id = %(speech_id)s
 order by word;'''
 
 GET_ALL_SPEECHES = '''select speech_id, speech_name
@@ -62,7 +62,8 @@ LAST_WORD_INDEX = '''SELECT MAX(word_id) FROM public."Word"'''
 GET_WORD_BY_LOC = '''SELECT a.word_id, word
 FROM public."Word_in_Speech" as a
 JOIN public."Word" as b on a.word_id = b.word_id
-WHERE speech_id = '{}' and paragraph = '{}' and sentence = '{}' and index_in_sentence = '{}';'''
+WHERE speech_id = %(speech_id)s and paragraph = %(paragraph)s and sentence = %(sentence)s and 
+index_in_sentence = %(index)s;'''
 
 GET_ALL_WORDS = '''SELECT word_id, word
 FROM public."Word"
@@ -70,19 +71,19 @@ ORDER BY word;'''
 
 GET_WORD_APPEARANCES_IN_SPEECH = '''SELECT paragraph, sentence, index_in_sentence
 FROM public."Word_in_Speech"
-where speech_id = '{}' and lower(actual_word) like lower('%{}%')
+where speech_id = %(speech_id)s and lower(actual_word) like lower(%(word)s)
 order by paragraph, sentence, index_in_sentence;'''
 
 GET_PARTIAL_SENTENCE = '''SELECT actual_word
 from public."Word_in_Speech"
-where speech_id = '{}' and paragraph = '{}' and sentence = '{}' and index_in_sentence - '{}' 
-BETWEEN -{range} and {range}
+where speech_id = %(speech_id)s and paragraph = %(paragraph)s and sentence = %(sentence)s and 
+index_in_sentence - %(index)s BETWEEN -%(range)s and %(range)s
 order by paragraph, sentence, index_in_sentence;'''
 
 # Phrases
 NEW_PHRASE_PART = '''INSERT INTO public."Word_Phrase"(
 index, phrase_id, word_id)
-VALUES ('{}', '{}', '{}');'''
+VALUES (%(index)s, %(phrase_id)s, %(word_id)s);'''
 
 LAST_PHRASE_INDEX = '''SELECT MAX(phrase_id)+1 FROM public."Word_Phrase"'''
 
@@ -110,7 +111,7 @@ order by phrase_id, index;'''
 
 GET_PHRASE = '''select index, word_id
 from public."Word_Phrase"
-where phrase_id = '{}'
+where phrase_id = %(phrase_id)s
 order by index;'''
 
 # Groups
@@ -142,41 +143,42 @@ FROM public."Group";'''
 # Statistics
 GET_ALL_COUNTS = '''select paragraph, sentence, count(word_id)
 from public."Word_in_Speech"
-where speech_id='{}'
+where speech_id= %(speech_id)s
 group by paragraph, sentence
 order by paragraph, sentence;'''
 
 COUNT_CHARS_IN_WORD = '''select sum(length)
 from public."Word_in_Speech" as a
 inner join public."Word" as b on a.word_id = b.word_id
-Where speech_id = '{}' and paragraph = '{}' and sentence = '{}' and index_in_sentence = '{}';'''
+Where speech_id = %(speech_id)s and paragraph = %(paragraph)s and sentence = %(sentence)s and 
+index_in_sentence = %(word)s;'''
 
 COUNT_CHARS_IN_SENTENCE = '''select sum(length)
 from public."Word_in_Speech" as a
 inner join public."Word" as b on a.word_id = b.word_id
-Where speech_id = '{}' and paragraph = '{}' and sentence = '{}';'''
+Where speech_id = %(speech_id)s and paragraph = %(paragraph)s and sentence = %(sentence)s;'''
 
 COUNT_CHARS_IN_PARAGRAPH = '''select sum(length)
 from public."Word_in_Speech" as a
 inner join public."Word" as b on a.word_id = b.word_id
-Where speech_id = '{}' and paragraph = '{}';'''
+Where speech_id = %(speech_id)s and paragraph = %(paragraph)s;'''
 
 COUNT_CHARS_IN_SPEECH = '''select sum(length)
 from public."Word_in_Speech" as a
 inner join public."Word" as b on a.word_id = b.word_id
-Where speech_id = '{}';'''
+Where speech_id = %(speech_id)s;'''
 
 COUNT_WORDS_IN_SENTENCE = '''select count(*)
 from public."Word_in_Speech"
-Where speech_id = '{}' and paragraph = '{}' and sentence = '{}';'''
+Where speech_id = %(speech_id)s and paragraph = %(paragraph)s and sentence = %(sentence)s;'''
 
 COUNT_WORDS_IN_PARAGRAPH = '''select count(*)
 from public."Word_in_Speech"
-Where speech_id = '{}' and paragraph = '{}';'''
+Where speech_id = %(speech_id)s and paragraph = %(paragraph)s;'''
 
 COUNT_WORDS_IN_SPEECH = '''select count(*)
 from public."Word_in_Speech"
-Where speech_id = '{}';'''
+Where speech_id = %(speech_id)s;'''
 
 WORD_APPEARANCES = '''select a.word_id, word, count(*) as amount
 from public."Word" as a
@@ -187,6 +189,6 @@ order by amount desc'''
 WORD_APPEARANCES_IN_SPEECH = '''select a.word_id, word, count(*) as amount
 from public."Word" as a
 inner join public."Word_in_Speech" as b on a.word_id = b.word_id
-where speech_id = '{}'
+where speech_id = %(speech_id)s
 group by a.word_id, word
 order by amount desc'''

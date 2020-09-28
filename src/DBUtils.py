@@ -58,10 +58,6 @@ def execute_query_safe(query, args={}, is_fetch=False, is_single_row=False):
             else:
                 records = cursor.fetchall()
 
-        # Make the changes to the database if insert action
-        # if 'INSERT' in query or 'DELETE' in query:
-        #     connection.commit()
-
     except (Exception, psycopg2.Error) as error:
         print("Error while fetching data from PostgreSQL", error)
 
