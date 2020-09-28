@@ -23,6 +23,9 @@ class Statistics(Resource):
 
 
 def get_general_counts_by_speech(speech_id):
+    if speech_id is None:
+        return 'No Speech Id given'
+
     results = []
     counts = execute_query_safe(GET_ALL_COUNTS, {'speech_id': speech_id}, True)
     paragraph_index = 1
@@ -56,6 +59,9 @@ def count_words(speech_id, paragraph, sentence):
 
 
 def count_chars(speech_id, paragraph, sentence, word):
+    if speech_id is None:
+        return 'Speech Id is Obligated field'
+
     if paragraph is not None:
         if sentence is not None:
             if word is not None:

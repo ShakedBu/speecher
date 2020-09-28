@@ -27,6 +27,9 @@ class Group(Resource):
 
 
 def create_new_group(name, words):
+    if name is None:
+        return 'No Group Name given'
+
     group = execute_query_safe(NEW_GROUP, {'group_name': name}, True, True)
     group_id = group[0]
 
@@ -56,6 +59,9 @@ def search_groups(query):
 
 
 def get_group(group_id):
+    if group_id is None:
+        return 'No Group Id given'
+
     results = []
     words = execute_query_safe(GET_GROUP, {'group_id': group_id}, True)
 
@@ -66,10 +72,16 @@ def get_group(group_id):
 
 
 def add_words_to_group(group_id, words):
+    if group_id or words is None:
+        return 'must get group id & word id'
+
     for word in words:
         execute_query_safe(ADD_WORD_TO_GROUP, {'group_id': group_id, 'word_id': word})
 
 
 def remove_words_from_group(group_id, words):
+    if group_id or words is None:
+        return 'must get group id & word id'
+
     for word in words:
         execute_query_safe(DELETE_WORD_FROM_GROUP,  {'group_id': group_id, 'word_id': word})
