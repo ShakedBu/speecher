@@ -2,7 +2,7 @@ import re
 from flask_restful import Resource
 from flask import request, jsonify
 
-from src.DBUtils import execute_query
+from src.DBUtils import execute_query, execute_query_safe
 from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, GET_ALL_SPEECHES, \
     GET_WORD, SEARCH_SPEECH, GET_SPEECH, ADD_WORD_TO_SPEECH_VAL, GET_SENTENCE, GET_SPEECH_DETAILS
 
@@ -24,7 +24,8 @@ class Speech(Resource):
 
 def create_new_speech(name, speaker, date, location, file_path):
     # Insert to Speech table
-    speech = execute_query(NEW_SPEECH.format(name, speaker, date, location, file_path), True, True)
+    speech = execute_query_safe(NEW_SPEECH, {'speech_name': name, 'speaker': speaker, 'date': date,
+                                             'location': location, 'file_path': file_path}, True, True)
     speech_id = speech[0]
 
     # Get the tst from the file
@@ -61,7 +62,7 @@ def create_new_speech(name, speaker, date, location, file_path):
                             only_word = re.findall('(\\w*)', curr_word)[0].lower()
 
                             # Try to find the word in the DB
-                            word = execute_query(GET_WORD.format(only_word), True, True)
+                            word = execute_query_safe(GET_WORD, {'word': only_word}, True, True)
 
                             # If found - gets id otherwise adds it
                             if word is not None:
@@ -83,8 +84,8 @@ def create_new_speech(name, speaker, date, location, file_path):
 
 
 def get_speech(speech_id):
-    speech_details = execute_query(GET_SPEECH_DETAILS.format(speech_id), True, True)
-    words = execute_query(GET_SPEECH.format(speech_id), True)
+    speech_details = execute_query_safe(GET_SPEECH_DETAILS, {'speech_id': speech_id}, True, True)
+    words = execute_query_safe(GET_SPEECH, {'speech_id': speech_id}, True)
     full_speech = ""
     curr_paragraph = 1
 
@@ -108,7 +109,9 @@ def get_speech(speech_id):
 def search_speech(query):
     results = {}
     results_list = []
-    sentences = execute_query(SEARCH_SPEECH.format(query, query, query, query), True)
+    sql_query = '%' + query + '%'
+    sentences = execute_query_safe(SEARCH_SPEECH, {'word': sql_query, 'speech_name': sql_query, 'speaker': sql_query,
+                                                   'location': sql_query}, True)
 
     for sentence in sentences:
         speech_id = sentence[3]
@@ -119,7 +122,8 @@ def search_speech(query):
                                   'location': sentence[2].strip(), 'text': ''}
         # If there is a sentence, add to text
         if sentence[4] != 0:
-            words_in_sentence = execute_query(GET_SENTENCE.format(speech_id, sentence[4], sentence[5]), True)
+            words_in_sentence = execute_query_safe(GET_SENTENCE, {'speech_id': speech_id, 'paragraph': sentence[4],
+                                                                  'sentence': sentence[5]}, True)
             full_sentence = ""
 
             # Build the sentence
@@ -141,7 +145,7 @@ def search_speech(query):
 
 def get_all_speeches():
     results = []
-    speeches = execute_query(GET_ALL_SPEECHES, True)
+    speeches = execute_query_safe(GET_ALL_SPEECHES, True)
 
     for speech in speeches:
         results.append({'id': speech[0], 'name': speech[1]})

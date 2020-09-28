@@ -1,9 +1,9 @@
 from flask_restful import Resource
 from flask import request
 
-from src.DBUtils import execute_query
+from src.DBUtils import execute_query, execute_query_safe
 from src.queries import NEW_GROUP, GET_WORD, ADD_WORD_TO_GROUP, SEARCH_GROUP, GET_GROUP, DELETE_WORD_FROM_GROUP, \
-    ADD_WORD_TO_GROUP, GET_ALL_GROUPS
+    GET_ALL_GROUPS
 
 
 class Group(Resource):
@@ -27,16 +27,16 @@ class Group(Resource):
 
 
 def create_new_group(name, words):
-    group = execute_query(NEW_GROUP.format(name), True, True)
+    group = execute_query_safe(NEW_GROUP, {'group_name': name}, True, True)
     group_id = group[0]
 
     # Add words to group
     for curr_word in words:
         # Get word
-        word = execute_query(GET_WORD.format(curr_word), True, True)
+        word = execute_query_safe(GET_WORD, {'word': curr_word}, True, True)
 
         # Add to group
-        execute_query(ADD_WORD_TO_GROUP.format(group_id, word[0]))
+        execute_query_safe(ADD_WORD_TO_GROUP, {'group_id': group_id, 'word_id': word[0]})
 
     return group_id
 
@@ -45,8 +45,9 @@ def search_groups(query):
     results = []
 
     if query != "":
-        groups = execute_query(SEARCH_GROUP.format(query))
-    groups = execute_query(GET_ALL_GROUPS, True)
+        sql_query = '%' + query + '%'
+        groups = execute_query_safe(SEARCH_GROUP, {'query': query}, True)
+    groups = execute_query_safe(GET_ALL_GROUPS, is_fetch=True)
 
     for group in groups:
         results.append({'id': group[0], 'name': group[1]})
@@ -56,7 +57,7 @@ def search_groups(query):
 
 def get_group(group_id):
     results = []
-    words = execute_query(GET_GROUP.format(group_id), True)
+    words = execute_query_safe(GET_GROUP, {'group_id': group_id}, True)
 
     for word in words:
         results.append({'id': word[0], 'word': word[1].strip()})
@@ -66,9 +67,9 @@ def get_group(group_id):
 
 def add_words_to_group(group_id, words):
     for word in words:
-        execute_query(ADD_WORD_TO_GROUP.format(word, group_id))
+        execute_query_safe(ADD_WORD_TO_GROUP, {'group_id': group_id, 'word_id': word})
 
 
 def remove_words_from_group(group_id, words):
     for word in words:
-        execute_query(DELETE_WORD_FROM_GROUP.format(group_id, word))
+        execute_query_safe(DELETE_WORD_FROM_GROUP,  {'group_id': group_id, 'word_id': word})
