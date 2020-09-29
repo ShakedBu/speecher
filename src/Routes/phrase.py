@@ -63,6 +63,9 @@ def get_phrases(speech_id, phrase_id):
 
     phrase_appearances = execute_query_safe(query, tuple(params), is_fetch=True)
 
+    if phrase_appearances is None or len(phrase_appearances) == 0:
+        abort(500, 'Phrase not appear in speech {}'.format(speech_id))
+
     for appearance in phrase_appearances:
         words_in_sentence = execute_query_safe(GET_PARTIAL_SENTENCE, {'speech_id': speech_id,
                                                                       'paragraph': appearance[0],
