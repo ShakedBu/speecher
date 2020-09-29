@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from flask import request
+from flask import request, abort
 
 from src.DBUtils import execute_query_safe
 from src.queries import LAST_PHRASE_INDEX, NEW_PHRASE_PART, GET_ALL_PHRASES, GET_PHRASE, GET_PARTIAL_SENTENCE, \
@@ -23,7 +23,7 @@ class Phrase(Resource):
 
 def create_new_phrase(words):
     if words is None or len(words) == 0:
-        return 'Phrase must contain words', 400
+        abort(400, 'Phrase must contain words')
 
     phrase_id = execute_query_safe(LAST_PHRASE_INDEX, is_fetch=True, is_single_row=True)[0]
     word_index = 1
@@ -36,7 +36,7 @@ def create_new_phrase(words):
 
 def get_phrases(speech_id, phrase_id):
     if speech_id is None or phrase_id is None:
-        return 'Must get speech id and phrase id', 400
+        abort(400, 'Must get speech id and phrase id')
 
     results = []
     words = get_phrase(phrase_id)
@@ -101,9 +101,13 @@ def get_all_phrases():
 
 def get_phrase(phrase_id):
     if phrase_id is None:
-        return 'No Phrase Id given', 400
+        abort(400, 'No Phrase Id given')
+
     results = []
     phrase_words = execute_query_safe(GET_PHRASE, {'phrase_id': phrase_id}, True)
+
+    if phrase_words is None or len(phrase_words) == 0:
+        abort(500, 'No phrase with id {}'.format(phrase_id))
 
     for phrase_word in phrase_words:
         results.append({'index': phrase_word[0], 'word': phrase_word[1]})
