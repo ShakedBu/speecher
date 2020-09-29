@@ -1,6 +1,5 @@
 from flask_restful import Resource
-from flask import request
-from psycopg2 import sql
+from flask import request, abort
 
 from src.DBUtils import execute_query_safe
 from src.queries import GET_ALL_WORDS, GET_WORD_BY_LOC, GET_SENTENCE, GET_WORD_APPEARANCES_IN_SPEECH,\
@@ -33,11 +32,14 @@ def get_all_words():
 
 def get_word_appearances_in_speech(speech_id, word):
     if speech_id is None or word is None:
-        return 'must get speech id & word id', 400
+        abort(400, 'must get speech id & word id')
 
     results = []
     query = '%' + word + '%'
     word_appearances = execute_query_safe(GET_WORD_APPEARANCES_IN_SPEECH, {'speech_id': speech_id, 'word': query}, True)
+
+    if word_appearances is None or len(word_appearances) == 0:
+        abort(500, 'word {} not appear in speech {}'.format(word, speech_id))
 
     # Go over the appearances and builds the results with full details
     for appearance in word_appearances:
@@ -58,7 +60,7 @@ def get_word_appearances_in_speech(speech_id, word):
 
 def get_word_by_location(speech_id, paragraph, sentence, index):
     if speech_id is None or paragraph is None or sentence is None or index is None:
-        return 'Must get all fields for location', 400
+        abort(400, 'Must get all fields for location')
 
     word = execute_query_safe(GET_WORD_BY_LOC, {'speech_id': speech_id, 'paragraph': paragraph,
                                                 'sentence': sentence, 'index': index}, True, True)
@@ -78,7 +80,7 @@ def get_word_by_location(speech_id, paragraph, sentence, index):
 
 def get_all_words_in_speech(speech_id):
     if speech_id is None:
-        return 'No Speech Id given', 400
+        abort(400, 'No Speech Id given')
 
     results = []
     words = execute_query_safe(GET_SPEECH_WORDS, {'speech_id': speech_id}, True)
