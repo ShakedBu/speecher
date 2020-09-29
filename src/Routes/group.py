@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from flask import request
+from flask import request, abort
 
 from src.DBUtils import execute_query_safe
 from src.queries import NEW_GROUP, GET_WORD, ADD_WORD_TO_GROUP, SEARCH_GROUP, GET_GROUP, DELETE_WORD_FROM_GROUP, \
@@ -28,9 +28,13 @@ class Group(Resource):
 
 def create_new_group(name, words):
     if name is None:
-        return 'No Group Name given', 400
+        abort(400, 'No Group Name given')
 
     group = execute_query_safe(NEW_GROUP, {'group_name': name}, True, True)
+
+    if group is None:
+        abort(500, 'Cannot create group')
+
     group_id = group[0]
 
     # Add words to group
@@ -49,8 +53,9 @@ def search_groups(query):
 
     if query != "":
         sql_query = '%' + query + '%'
-        groups = execute_query_safe(SEARCH_GROUP, {'query': query}, True)
-    groups = execute_query_safe(GET_ALL_GROUPS, is_fetch=True)
+        groups = execute_query_safe(SEARCH_GROUP, {'query': sql_query}, True)
+    else:
+        groups = execute_query_safe(GET_ALL_GROUPS, is_fetch=True)
 
     for group in groups:
         results.append({'id': group[0], 'name': group[1]})
@@ -60,7 +65,7 @@ def search_groups(query):
 
 def get_group(group_id):
     if group_id is None:
-        return 'No Group Id given', 400
+        abort(400, 'No Group Id given')
 
     results = []
     words = execute_query_safe(GET_GROUP, {'group_id': group_id}, True)
@@ -73,7 +78,7 @@ def get_group(group_id):
 
 def add_words_to_group(group_id, words):
     if group_id is None or words is None:
-        return 'must get group id & word id', 400
+        abort(400, 'must get group id & word id')
 
     for word in words:
         execute_query_safe(ADD_WORD_TO_GROUP, {'group_id': group_id, 'word_id': word})
@@ -81,7 +86,7 @@ def add_words_to_group(group_id, words):
 
 def remove_words_from_group(group_id, words):
     if group_id is None or words is None:
-        return 'must get group id & word id', 400
+        abort(400, 'must get group id & word id')
 
     for word in words:
         execute_query_safe(DELETE_WORD_FROM_GROUP,  {'group_id': group_id, 'word_id': word})
