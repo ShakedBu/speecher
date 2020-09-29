@@ -1,6 +1,6 @@
 import re
 from flask_restful import Resource
-from flask import request, jsonify
+from flask import request, jsonify, abort
 
 from src.DBUtils import execute_query_safe, execute_insert_many_safe
 from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, GET_ALL_SPEECHES, \
@@ -24,11 +24,15 @@ class Speech(Resource):
 
 def create_new_speech(name, speaker, date, location, file_path):
     if name is None or file_path is None:
-        return 'Must get all of the required fields of the speech', 400
+        abort(400, 'Must get all of the required fields of the speech')
 
     # Insert to Speech table
     speech = execute_query_safe(NEW_SPEECH, {'speech_name': name, 'speaker': speaker, 'date': date,
                                              'location': location, 'file_path': file_path}, True, True)
+
+    if speech is None:
+        abort(500, 'Cannot crate speech')
+
     speech_id = speech[0]
 
     # Get the tst from the file
@@ -76,15 +80,11 @@ def create_new_speech(name, speaker, date, location, file_path):
                                                           True, True)
                                 word_id = word[0]
 
-                            # sentence_insert += ADD_WORD_TO_SPEECH_VAL.format(word_id, speech_id,
-                            #                                                  paragraph_index, sentence_index,
-                            #                                                  word_index, actual_word)
                             words_to_insert.append((word_id, speech_id, paragraph_index, sentence_index, word_index,
                                                     actual_word))
                             word_index += 1
 
                     # Add the whole sentence to the DB
-                    # execute_query(ADD_WORD_TO_SPEECH.format(sentence_insert.rstrip(',')))
                     execute_insert_many_safe(ADD_WORD_TO_SPEECH, words_to_insert, ADD_WORD_TO_SPEECH_VAL)
                     sentence_index += 1
             paragraph_index += 1
@@ -92,9 +92,13 @@ def create_new_speech(name, speaker, date, location, file_path):
 
 def get_speech(speech_id):
     if speech_id is None:
-        return 'No Speech Id given', 400
+        abort(400, 'No Speech Id given')
 
     speech_details = execute_query_safe(GET_SPEECH_DETAILS, {'speech_id': speech_id}, True, True)
+
+    if speech_details is None:
+        abort(500, 'No Speech with id {}'.format(speech_id))
+
     words = execute_query_safe(GET_SPEECH, {'speech_id': speech_id}, True)
     full_speech = ""
     curr_paragraph = 1
@@ -118,7 +122,7 @@ def get_speech(speech_id):
 
 def search_speech(query):
     if query is None:
-        return 'No query to search', 400
+        abort(400, 'No query to search')
 
     results = {}
     results_list = []
@@ -127,7 +131,7 @@ def search_speech(query):
                                                    'location': sql_query}, True)
 
     if sentences is None or len(sentences) == 0:
-        return 'No speeches found with query - ' + query, 500
+        abort(500, 'No speeches found with query - {}'.format(query))
 
     for sentence in sentences:
         speech_id = sentence[3]
