@@ -32,7 +32,7 @@ def get_all_words():
 
 
 def get_word_appearances_in_speech(speech_id, word):
-    if speech_id or word is None:
+    if speech_id is None or word is None:
         return 'must get speech id & word id', 400
 
     results = []
@@ -57,7 +57,7 @@ def get_word_appearances_in_speech(speech_id, word):
 
 
 def get_word_by_location(speech_id, paragraph, sentence, index):
-    if speech_id or paragraph or sentence or index is None:
+    if speech_id is None or paragraph is None or sentence is None or index is None:
         return 'Must get all fields for location', 400
 
     word = execute_query_safe(GET_WORD_BY_LOC, {'speech_id': speech_id, 'paragraph': paragraph,

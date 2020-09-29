@@ -72,7 +72,7 @@ def get_group(group_id):
 
 
 def add_words_to_group(group_id, words):
-    if group_id or words is None:
+    if group_id is None or words is None:
         return 'must get group id & word id', 400
 
     for word in words:
@@ -80,7 +80,7 @@ def add_words_to_group(group_id, words):
 
 
 def remove_words_from_group(group_id, words):
-    if group_id or words is None:
+    if group_id is None or words is None:
         return 'must get group id & word id', 400
 
     for word in words:

@@ -23,7 +23,7 @@ class Speech(Resource):
 
 
 def create_new_speech(name, speaker, date, location, file_path):
-    if name or file_path is None:
+    if name is None or file_path is None:
         return 'Must get all of the required fields of the speech', 400
 
     # Insert to Speech table
@@ -125,6 +125,9 @@ def search_speech(query):
     sql_query = '%' + query + '%'
     sentences = execute_query_safe(SEARCH_SPEECH, {'word': sql_query, 'speech_name': sql_query, 'speaker': sql_query,
                                                    'location': sql_query}, True)
+
+    if sentences is None or len(sentences) == 0:
+        return 'No speeches found with query - ' + query, 500
 
     for sentence in sentences:
         speech_id = sentence[3]

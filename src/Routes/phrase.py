@@ -35,30 +35,33 @@ def create_new_phrase(words):
 
 
 def get_phrases(speech_id, phrase_id):
-    if speech_id or phrase_id is None:
+    if speech_id is None or phrase_id is None:
         return 'Must get speech id and phrase id', 400
 
     results = []
     words = get_phrase(phrase_id)
     query = ""
+    params = []
 
     # Build this massive query to find all the occurrences of the phrase in the speech :)
     for word in words:
         index = int(word['index'])
         previous_index = int(index) - 1
         word_id = word['word']
+        params.append(speech_id)
+        params.append(word_id)
 
         if index == 1:
-            query = SEARCH_PHRASE_FIRST.format(word_id, '{}', index=index)
+            query = SEARCH_PHRASE_FIRST.format('{}', index=index)
         elif index == len(words):
-            last_query = SEARCH_PHRASE_LAST.format(word_id, index=index, previous_index=previous_index)
+            last_query = SEARCH_PHRASE_LAST.format(index=index, previous_index=previous_index)
             query = query.format(last_query)
         else:
-            mid_query = SEARCH_PHRASE_MIDDLE.format(word_id, '{}', index=index,
+            mid_query = SEARCH_PHRASE_MIDDLE.format('{}', index=index,
                                                     previous_index=previous_index)
             query = query.format(mid_query)
 
-    phrase_appearances = execute_query_safe(query, {'speech_id': speech_id}, is_fetch=True)
+    phrase_appearances = execute_query_safe(query, tuple(params), is_fetch=True)
 
     for appearance in phrase_appearances:
         words_in_sentence = execute_query_safe(GET_PARTIAL_SENTENCE, {'speech_id': speech_id,

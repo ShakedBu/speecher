@@ -89,18 +89,18 @@ LAST_PHRASE_INDEX = '''SELECT MAX(phrase_id)+1 FROM public."Word_Phrase"'''
 
 SEARCH_PHRASE_FIRST = '''select paragraph, sentence, index_in_sentence
 from public."Word_in_Speech" as a{index}
-where speech_id = %(speech_id)s and a{index}.word_id = '{}' and exists ({})
+where speech_id = %s and a{index}.word_id = %s and exists ({})
 order by paragraph, sentence, index_in_sentence;'''
 
 SEARCH_PHRASE_MIDDLE = '''select paragraph, sentence, index_in_sentence
 from public."Word_in_Speech" as a{index}
-where speech_id = %(speech_id)s and a{index}.word_id = '{}' and 
+where speech_id = %s and a{index}.word_id = %s and 
 a{previous_index}.paragraph = a{index}.paragraph and a{previous_index}.sentence = a{index}.sentence and 
 a{previous_index}.index_in_sentence = a{index}.index_in_sentence-1 and exists ({})'''
 
 SEARCH_PHRASE_LAST = '''select paragraph, sentence, index_in_sentence
 from public."Word_in_Speech" as a{index}
-where speech_id = %(speech_id)s and a{index}.word_id = '{}' and 
+where speech_id = %s and a{index}.word_id = %s and 
 a{previous_index}.paragraph = a{index}.paragraph and a{previous_index}.sentence = a{index}.sentence and 
 a{previous_index}.index_in_sentence = a{index}.index_in_sentence-1'''
 
