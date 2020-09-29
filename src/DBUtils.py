@@ -11,6 +11,11 @@ def execute_query_safe(query, args={}, is_fetch=False, is_single_row=False):
                                       host="127.0.0.1",
                                       port="5432",
                                       database="speecher")
+        # connection = psycopg2.connect(user="speecher_read",
+        #                               password="Speecher2@",
+        #                               host="127.0.0.1",
+        #                               port="5432",
+        #                               database="speecher")
         connection.set_session(autocommit=True)
         cursor = connection.cursor()
 
