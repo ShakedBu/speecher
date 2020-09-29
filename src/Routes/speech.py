@@ -19,7 +19,8 @@ class Speech(Resource):
 
     def post(self):
         data = request.get_json()
-        create_new_speech(data['name'], data['speaker'], data['date'], data['location'], data['file_path'])
+        create_new_speech(data.get('name'), data.get('speaker'), data.get('date'), data.get('location'),
+                          data.get('file_path'))
 
 
 def create_new_speech(name, speaker, date, location, file_path):

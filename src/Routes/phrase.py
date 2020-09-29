@@ -18,7 +18,7 @@ class Phrase(Resource):
 
     def post(self):
         data = request.get_json()
-        create_new_phrase(data['words'])
+        create_new_phrase(data.get('words'))
 
 
 def create_new_phrase(words):

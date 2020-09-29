@@ -19,7 +19,7 @@ class Statistics(Resource):
             if request.args['count'] == 'appearances':
                 return count_words_appearances(request.args.get('speech_id'))
 
-        return get_general_counts_by_speech(request.args['speech_id'])
+        return get_general_counts_by_speech(request.args.get('speech_id'))
 
 
 def get_general_counts_by_speech(speech_id):

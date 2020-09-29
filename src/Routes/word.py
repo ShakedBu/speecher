@@ -11,7 +11,7 @@ class Word(Resource):
         if 'speech_id' in request.args:
             if 'paragraph' in request.args:
                 return get_word_by_location(request.args['speech_id'], request.args['paragraph'],
-                                            request.args['sentence'], request.args['index'])
+                                            request.args.get('sentence'), request.args.get('index'))
             elif 'word' in request.args:
                 return get_word_appearances_in_speech(request.args['speech_id'], request.args['word'])
 

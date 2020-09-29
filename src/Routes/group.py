@@ -16,14 +16,14 @@ class Group(Resource):
 
     def post(self):
         data = request.get_json()
-        create_new_group(data['name'], data['words'])
+        create_new_group(data.get('name'), data.get('words'))
 
     def put(self):
         data = request.get_json()
         if data['action'] == 'remove':
-            remove_words_from_group(data['id'], data['words'])
+            remove_words_from_group(data.get('id'), data.get('words'))
         else:
-            add_words_to_group(data['id'], data['words'])
+            add_words_to_group(data.get('id'), data.get('words'))
 
 
 def create_new_group(name, words):
