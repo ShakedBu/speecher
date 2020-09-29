@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from flask import request
+from flask import request, abort
 
 from src.DBUtils import execute_query_safe
 from src.queries import GET_ALL_COUNTS, COUNT_CHARS_IN_WORD, COUNT_CHARS_IN_SENTENCE, COUNT_CHARS_IN_PARAGRAPH, \
@@ -24,7 +24,7 @@ class Statistics(Resource):
 
 def get_general_counts_by_speech(speech_id):
     if speech_id is None:
-        return 'No Speech Id given', 400
+        abort(400, 'No Speech Id given')
 
     results = []
     counts = execute_query_safe(GET_ALL_COUNTS, {'speech_id': speech_id}, True)
@@ -60,7 +60,7 @@ def count_words(speech_id, paragraph, sentence):
 
 def count_chars(speech_id, paragraph, sentence, word):
     if speech_id is None:
-        return 'Speech Id is Obligated field', 400
+        abort(400, 'Speech Id is Obligated field')
 
     if paragraph is not None:
         if sentence is not None:
