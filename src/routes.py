@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from flask_cors import CORS
-from flask_jwt import JWT, jwt_required, current_identity
+from flask_jwt import JWT
 
 from src.Routes.group import Group
 from src.Routes.phrase import Phrase
