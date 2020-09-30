@@ -83,7 +83,8 @@ order by paragraph, sentence, index_in_sentence;'''
 # Phrases
 NEW_PHRASE_PART = '''INSERT INTO public."Word_Phrase"(
 index, phrase_id, word_id)
-VALUES (%(index)s, %(phrase_id)s, %(word_id)s);'''
+VALUES (%(index)s, %(phrase_id)s, %(word_id)s)
+returning phrase_id;'''
 
 LAST_PHRASE_INDEX = '''SELECT MAX(phrase_id)+1 FROM public."Word_Phrase"'''
 
@@ -123,10 +124,12 @@ returning group_id'''
 
 ADD_WORD_TO_GROUP = '''INSERT INTO public."Word_in_Group"(
 word_id, group_id)
-VALUES (%(word_id)s, %(group_id)s);'''
+VALUES (%(word_id)s, %(group_id)s)
+returning group_id;'''
 
 DELETE_WORD_FROM_GROUP = '''DELETE FROM public."Word_in_Group"
-WHERE group_id = %(group_id)s AND word_id = %(word_id)s;'''
+WHERE group_id = %(group_id)s AND word_id = %(word_id)s
+returning group_id;'''
 
 SEARCH_GROUP = '''SELECT group_id, group_name
 FROM public."Group"

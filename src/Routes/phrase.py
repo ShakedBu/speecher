@@ -33,7 +33,11 @@ def create_new_phrase(words):
 
     for curr_word in words:
         # Add word to phrase
-        execute_query_safe(NEW_PHRASE_PART, {'index': word_index, 'phrase_id': phrase_id, 'word_id': curr_word})
+        response = execute_query_safe(NEW_PHRASE_PART, {'index': word_index, 'phrase_id': phrase_id,
+                                                        'word_id': curr_word}, True)
+        if response is None:
+            abort(500, 'Cannot create phrase')
+
         word_index += 1
 
 

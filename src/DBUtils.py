@@ -1,21 +1,28 @@
 import psycopg2
 from psycopg2.extras import execute_values
+from flask_jwt import current_identity
+from flask import abort
 
 
 def execute_query_safe(query, args={}, is_fetch=False, is_single_row=False):
     records = None
     try:
         # Open connection to our database
-        connection = psycopg2.connect(user="speecher",
-                                      password="Speecher1!",
-                                      host="127.0.0.1",
-                                      port="5432",
-                                      database="speecher")
-        # connection = psycopg2.connect(user="speecher_read",
-        #                               password="Speecher2@",
-        #                               host="127.0.0.1",
-        #                               port="5432",
-        #                               database="speecher")
+        if current_identity.username == 'speecher':
+            connection = psycopg2.connect(user="speecher",
+                                          password="Speecher1!",
+                                          host="127.0.0.1",
+                                          port="5432",
+                                          database="speecher")
+        elif current_identity.username == 'speecher2':
+            connection = psycopg2.connect(user="speecher_read",
+                                          password="Speecher2@",
+                                          host="127.0.0.1",
+                                          port="5432",
+                                          database="speecher")
+        else:
+            abort(401)
+
         connection.set_session(autocommit=True)
         cursor = connection.cursor()
 

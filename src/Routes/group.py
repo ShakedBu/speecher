@@ -85,7 +85,10 @@ def add_words_to_group(group_id, words):
         abort(400, 'must get group id & word id')
 
     for word in words:
-        execute_query_safe(ADD_WORD_TO_GROUP, {'group_id': group_id, 'word_id': word})
+        response = execute_query_safe(ADD_WORD_TO_GROUP, {'group_id': group_id, 'word_id': word}, True)
+
+    if response is None:
+        abort(500, 'Cannot add word to group')
 
 
 def remove_words_from_group(group_id, words):
@@ -93,4 +96,7 @@ def remove_words_from_group(group_id, words):
         abort(400, 'must get group id & word id')
 
     for word in words:
-        execute_query_safe(DELETE_WORD_FROM_GROUP,  {'group_id': group_id, 'word_id': word})
+        response = execute_query_safe(DELETE_WORD_FROM_GROUP,  {'group_id': group_id, 'word_id': word}, True)
+
+    if response is None:
+        abort(500, 'Cannot remove word from group')
