@@ -1,13 +1,18 @@
 import re
 from flask_restful import Resource
 from flask import request, jsonify, abort
+from flask_jwt import jwt_required
 
+from src.Routes.auth import check_user
 from src.DBUtils import execute_query_safe, execute_insert_many_safe
 from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, GET_ALL_SPEECHES, \
     GET_WORD, SEARCH_SPEECH, GET_SPEECH, ADD_WORD_TO_SPEECH_VAL, GET_SENTENCE, GET_SPEECH_DETAILS
 
 
 class Speech(Resource):
+    # decorators = [check_user, jwt_required()]
+
+    @jwt_required()
     def get(self):
         if 'id' in request.args:
             return jsonify(get_speech(request.args['id']))
@@ -17,6 +22,7 @@ class Speech(Resource):
 
         return get_all_speeches()
 
+    @jwt_required()
     def post(self):
         data = request.get_json()
         create_new_speech(data.get('name'), data.get('speaker'), data.get('date'), data.get('location'),
@@ -169,6 +175,6 @@ def get_all_speeches():
     speeches = execute_query_safe(GET_ALL_SPEECHES, is_fetch=True)
 
     for speech in speeches:
-        results.append({'id': speech[0], 'name': speech[1]})
+        results.append({'id': speech[0], 'name': speech[1].strip()})
 
     return results
