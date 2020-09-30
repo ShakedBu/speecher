@@ -16,14 +16,6 @@ def create_app():
     CORS(app)
     api = Api(app)
 
-    # # Configure application to store JWTs in cookies
-    # app.config['JWT_TOKEN_LOCATION'] = ['cookies']
-    # # Only allow JWT cookies to be sent over https.
-    # # In production, this should likely be True
-    # app.config['JWT_COOKIE_SECURE'] = False
-    # # Enable csrf double submit protection
-    # app.config['JWT_COOKIE_CSRF_PROTECT'] = True
-    # Set the secret key to sign the JWTs with
     app.config['JWT_SECRET_KEY'] = 'sh@kedBe$t'
     jwt = JWT(app, authenticate, identity)
 
@@ -32,7 +24,5 @@ def create_app():
     api.add_resource(Group, '/group')
     api.add_resource(Speech, '/speech')
     api.add_resource(Statistics, '/statistics')
-    # api.add_resource(Login, '/login')
-    # api.add_resource(Logout, '/logout')
 
     return app

@@ -1,5 +1,6 @@
 from flask_restful import Resource
 from flask import request, abort
+from flask_jwt import jwt_required
 
 from src.DBUtils import execute_query_safe
 from src.queries import NEW_GROUP, GET_WORD, ADD_WORD_TO_GROUP, SEARCH_GROUP, GET_GROUP, DELETE_WORD_FROM_GROUP, \
@@ -7,6 +8,7 @@ from src.queries import NEW_GROUP, GET_WORD, ADD_WORD_TO_GROUP, SEARCH_GROUP, GE
 
 
 class Group(Resource):
+    @jwt_required()
     def get(self):
         if 'id' in request.args:
             return get_group(request.args['id'])
@@ -14,10 +16,12 @@ class Group(Resource):
         elif 'query' in request.args:
             return search_groups(request.args['query'])
 
+    @jwt_required()
     def post(self):
         data = request.get_json()
         create_new_group(data.get('name'), data.get('words'))
 
+    @jwt_required()
     def put(self):
         data = request.get_json()
         if data['action'] == 'remove':

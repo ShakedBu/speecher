@@ -1,5 +1,6 @@
 from flask_restful import Resource
 from flask import request, abort
+from flask_jwt import jwt_required
 
 from src.DBUtils import execute_query_safe
 from src.queries import LAST_PHRASE_INDEX, NEW_PHRASE_PART, GET_ALL_PHRASES, GET_PHRASE, GET_PARTIAL_SENTENCE, \
@@ -7,6 +8,7 @@ from src.queries import LAST_PHRASE_INDEX, NEW_PHRASE_PART, GET_ALL_PHRASES, GET
 
 
 class Phrase(Resource):
+    @jwt_required()
     def get(self):
         if 'phrase_id' in request.args:
             if 'speech_id' in request.args:
@@ -16,6 +18,7 @@ class Phrase(Resource):
 
         return get_all_phrases()
 
+    @jwt_required()
     def post(self):
         data = request.get_json()
         create_new_phrase(data.get('words'))

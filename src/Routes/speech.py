@@ -3,15 +3,12 @@ from flask_restful import Resource
 from flask import request, jsonify, abort
 from flask_jwt import jwt_required
 
-from src.Routes.auth import check_user
 from src.DBUtils import execute_query_safe, execute_insert_many_safe
 from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, GET_ALL_SPEECHES, \
     GET_WORD, SEARCH_SPEECH, GET_SPEECH, ADD_WORD_TO_SPEECH_VAL, GET_SENTENCE, GET_SPEECH_DETAILS
 
 
 class Speech(Resource):
-    # decorators = [check_user, jwt_required()]
-
     @jwt_required()
     def get(self):
         if 'id' in request.args:

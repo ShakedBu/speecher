@@ -1,5 +1,6 @@
 from flask_restful import Resource
 from flask import request, abort
+from flask_jwt import jwt_required
 
 from src.DBUtils import execute_query_safe
 from src.queries import GET_ALL_COUNTS, COUNT_CHARS_IN_WORD, COUNT_CHARS_IN_SENTENCE, COUNT_CHARS_IN_PARAGRAPH, \
@@ -8,6 +9,7 @@ from src.queries import GET_ALL_COUNTS, COUNT_CHARS_IN_WORD, COUNT_CHARS_IN_SENT
 
 
 class Statistics(Resource):
+    @jwt_required()
     def get(self):
         if 'count' in request.args:
             if request.args['count'] == 'chars':

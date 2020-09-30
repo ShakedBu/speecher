@@ -1,5 +1,6 @@
 from flask_restful import Resource
 from flask import request, abort
+from flask_jwt import jwt_required
 
 from src.DBUtils import execute_query_safe
 from src.queries import GET_ALL_WORDS, GET_WORD_BY_LOC, GET_SENTENCE, GET_WORD_APPEARANCES_IN_SPEECH,\
@@ -7,6 +8,7 @@ from src.queries import GET_ALL_WORDS, GET_WORD_BY_LOC, GET_SENTENCE, GET_WORD_A
 
 
 class Word(Resource):
+    @jwt_required()
     def get(self):
         if 'speech_id' in request.args:
             if 'paragraph' in request.args:
