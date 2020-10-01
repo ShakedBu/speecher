@@ -9,23 +9,23 @@ def execute_query_safe(query, args={}, is_fetch=False, is_single_row=False):
     records = None
 
     # For heroku - if prod then take this
-    database_url = os.environ.get('DATABASE_URL')
+    database_host = os.environ.get('DATABASE_HOST', "127.0.0.1")
+    database_port = os.environ.get('DATABASE_PORT', "5432")
 
     try:
         # Open connection to our database
-        if database_url:
-            connection = psycopg2.connect(database_url)
-        elif current_identity.username == 'speecher':
+
+        if current_identity.username == 'speecher':
             connection = psycopg2.connect(user="speecher",
                                           password="Speecher1!",
-                                          host="127.0.0.1",
-                                          port="5432",
+                                          host=database_host,
+                                          port=database_port,
                                           database="speecher")
         elif current_identity.username == 'speecher2':
             connection = psycopg2.connect(user="speecher_read",
                                           password="Speecher2@",
-                                          host="127.0.0.1",
-                                          port="5432",
+                                          host=database_host,
+                                          port=database_port,
                                           database="speecher")
         else:
             abort(401)
