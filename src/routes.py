@@ -2,6 +2,7 @@ from flask import Flask
 from flask_restful import Api
 from flask_cors import CORS
 from flask_jwt import JWT
+import datetime
 
 from src.Routes.group import Group
 from src.Routes.phrase import Phrase
@@ -16,6 +17,7 @@ CORS(app)
 api = Api(app)
 
 app.config['JWT_SECRET_KEY'] = 'sh@kedBe$t'
+app.config['JWT_EXPIRATION_DELTA'] = datetime.timedelta(minutes=15)
 jwt = JWT(app, authenticate, identity)
 
 api.add_resource(Word, '/word')
