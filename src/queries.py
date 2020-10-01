@@ -46,7 +46,8 @@ WHERE speech_id = %(speech_id)s
 order by word;'''
 
 GET_ALL_SPEECHES = '''select speech_id, speech_name
-from public."Speech"'''
+from public."Speech"
+order by speech_name;'''
 
 # Words
 NEW_WORD = '''INSERT INTO public."Word"(
@@ -141,7 +142,8 @@ join public."Word" as b on a.word_id = b.word_id
 where group_id = %(group_id)s;'''
 
 GET_ALL_GROUPS = '''SELECT group_id, group_name
-FROM public."Group";'''
+FROM public."Group"
+order by group_name;'''
 
 # Statistics
 GET_ALL_COUNTS = '''select paragraph, sentence, count(word_id)
