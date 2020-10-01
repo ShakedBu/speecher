@@ -14,7 +14,6 @@ def execute_query_safe(query, args={}, is_fetch=False, is_single_row=False):
 
     try:
         # Open connection to our database
-
         if current_identity.username == 'speecher':
             connection = psycopg2.connect(user="speecher",
                                           password="Speecher1!",
