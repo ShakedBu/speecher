@@ -2,13 +2,20 @@ import psycopg2
 from psycopg2.extras import execute_values
 from flask_jwt import current_identity
 from flask import abort
+import os
 
 
 def execute_query_safe(query, args={}, is_fetch=False, is_single_row=False):
     records = None
+
+    # For heroku - if prod then take this
+    database_url = os.environ.get('DATABASE_URL')
+
     try:
         # Open connection to our database
-        if current_identity.username == 'speecher':
+        if database_url:
+            connection = psycopg2.connect(database_url)
+        elif current_identity.username == 'speecher':
             connection = psycopg2.connect(user="speecher",
                                           password="Speecher1!",
                                           host="127.0.0.1",
