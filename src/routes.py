@@ -17,7 +17,7 @@ CORS(app)
 api = Api(app)
 
 app.config['JWT_SECRET_KEY'] = 'sh@kedBe$t'
-app.config['JWT_EXPIRATION_DELTA'] = datetime.timedelta(minutes=15)
+app.config['JWT_EXPIRATION_DELTA'] = datetime.timedelta(minutes=60)
 jwt = JWT(app, authenticate, identity)
 
 api.add_resource(Word, '/word')
