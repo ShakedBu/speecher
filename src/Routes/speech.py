@@ -5,7 +5,7 @@ from flask_jwt import jwt_required
 
 from src.DBUtils import execute_query_safe, execute_insert_many_safe
 from src.queries import NEW_SPEECH, NEW_WORD, ADD_WORD_TO_SPEECH, GET_ALL_SPEECHES, \
-    GET_WORD, SEARCH_SPEECH, GET_SPEECH, ADD_WORD_TO_SPEECH_VAL, GET_SENTENCE, GET_SPEECH_DETAILS
+    GET_WORD, SEARCH_SPEECH, GET_SPEECH, ADD_WORD_TO_SPEECH_VAL, GET_SENTENCE, GET_SPEECH_DETAILS, GET_ALL_WORDS
 
 
 class Speech(Resource):
@@ -46,8 +46,13 @@ def create_new_speech(name, speaker, date, location, file_path):
     finally:
         file.close()
 
-    # paragraphs = text.split('\n\n')
     paragraph_index = 1
+
+    # Build a words' dictionary
+    all_words = execute_query_safe(GET_ALL_WORDS, is_fetch=True)
+    word_dict = {}
+    for word in all_words:
+        word_dict[word[1].strip()] = word[0]
 
     # Go over each paragraph
     for curr_paragraph in paragraphs:
@@ -56,6 +61,8 @@ def create_new_speech(name, speaker, date, location, file_path):
             # Split to sentences
             sentences = re.split('([\\S]+?[[\\S\\s]+?(?:[.?!]))', curr_paragraph)
             sentence_index = 1
+            words_to_insert = []
+
             # Go over each sentence
             for curr_sentence in sentences:
 
@@ -63,8 +70,6 @@ def create_new_speech(name, speaker, date, location, file_path):
                     # Split to words
                     words = curr_sentence.split()
                     word_index = 1
-                    sentence_insert = ""
-                    words_to_insert = []
 
                     # Go over the words
                     for curr_word in words:
@@ -73,24 +78,22 @@ def create_new_speech(name, speaker, date, location, file_path):
                             actual_word = curr_word
                             only_word = re.findall('(\\w*)', curr_word)[0].lower()
 
-                            # Try to find the word in the DB
-                            word = execute_query_safe(GET_WORD, {'word': only_word}, True, True)
+                            # Try to find the word in the dictionary
+                            word_id = word_dict.get(only_word)
 
-                            # If found - gets id otherwise adds it
-                            if word is not None:
-                                word_id = word[0]
-                            else:
+                            # If not found - adds it
+                            if word_id is None:
                                 word = execute_query_safe(NEW_WORD, {'word': only_word, 'length': len(only_word)},
                                                           True, True)
                                 word_id = word[0]
+                                word_dict[only_word] = word_id
 
                             words_to_insert.append((word_id, speech_id, paragraph_index, sentence_index, word_index,
                                                     actual_word))
                             word_index += 1
-
-                    # Add the whole sentence to the DB
-                    execute_insert_many_safe(ADD_WORD_TO_SPEECH, words_to_insert, ADD_WORD_TO_SPEECH_VAL)
                     sentence_index += 1
+            # Add the whole paragraph to the DB
+            execute_insert_many_safe(ADD_WORD_TO_SPEECH, words_to_insert, ADD_WORD_TO_SPEECH_VAL)
             paragraph_index += 1
 
 
