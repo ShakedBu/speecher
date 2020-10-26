@@ -76,7 +76,7 @@ def create_new_speech(name, speaker, date, location, file_path):
 
                         if curr_word != "":
                             actual_word = curr_word
-                            only_word = re.findall('(\\w*)', curr_word)[0].lower()
+                            only_word = re.sub(r'[^\w\s]', '', curr_word).lower()
 
                             # Try to find the word in the dictionary
                             word_id = word_dict.get(only_word)
